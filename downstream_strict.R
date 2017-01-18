@@ -83,33 +83,37 @@ heat_obj<-plot_heat_genes(data = heat_in,labels = label,meth)
 ############################
 ### P C A GENES ONLY #######
 ############################
-meth= "PC"
-pc_genes = read.csv("pc_gene_symbols.csv")
-louv_samples = read.csv("barcodes_subsamples.csv")
-
-ss_ids = which(all_data[[1]]$hg19$barcodes %in% louv_samples$x) #all_data[[1]]$hg19$barcodes
-pc_ids =  which( k$use_genes %in% pc_genes$x)
-
-sub_samples_pc = log2(as.matrix(m_n[ss_ids,pc_ids])+1)
-dim(sub_samples_pc)
-rownames(sub_samples_pc)  = louv_samples$x #all_data[[1]]$hg19$barcodes
-colnames(sub_samples_pc)  = pc_genes$x
-
-label_ss = pred_labels$x[ss_ids];
-
-fixed_samples = c()
-for(clust_id in unique(label_ss)){
-  if(clust_id==0) next;
-  sample_ids_per_cluster = which(label_ss==clust_id)
-  fixed_samples = c(fixed_samples, sample(sample_ids_per_cluster,min(100,length(sample_ids_per_cluster))))
+PCA = F
+if (PCA == T){
+  meth= "PC"
+  pc_genes = read.csv("pc_gene_symbols.csv")
+  louv_samples = read.csv("barcodes_subsamples.csv")
+  
+  use_samples = all_data[[1]]$hg19$barcodes #OR louv_samples$x
+  
+  ss_ids = which(all_data[[1]]$hg19$barcodes %in% use_samples) #all_data[[1]]$hg19$barcodes
+  pc_ids =  which( k$use_genes %in% pc_genes$x)
+  
+  sub_samples_pc = log2(as.matrix(m_n[ss_ids,pc_ids])+1)
+  dim(sub_samples_pc)
+  rownames(sub_samples_pc)  = use_samples #all_data[[1]]$hg19$barcodes
+  colnames(sub_samples_pc)  = pc_genes$x
+  
+  label_ss = pred_labels$x[ss_ids];
+  
+  fixed_samples = c()
+  for(clust_id in unique(label_ss)){
+    if(clust_id==0) next;
+    sample_ids_per_cluster = which(label_ss==clust_id)
+    fixed_samples = c(fixed_samples, sample(sample_ids_per_cluster,min(100,length(sample_ids_per_cluster))))
+  }
+  
+  label = label_ss[fixed_samples]
+  sub_samples_pc = sub_samples_pc[fixed_samples, ]
+  dim(sub_samples_pc)
+  heat_in = t(sub_samples_pc) ; 
+  heat_obj<-plot_heat_genes(data = heat_in,labels = label,meth)
 }
-
-label = label_ss[fixed_samples]
-sub_samples_pc = sub_samples_pc[fixed_samples, ]
-dim(sub_samples_pc)
-heat_in = t(sub_samples_pc) ; 
-heat_obj<-plot_heat_genes(data = heat_in,labels = label,meth)
-
 ############################
 ### P C A GENES END ########
 ############################
@@ -152,60 +156,5 @@ hm<-heatmap.2(heat_obj[["mat"]],
 
 dev.off()
 
-write.csv(hm[["carpet"]],file = file.path(REPORT_DIR,"heatmap_DE_top20.csv"))
+write.csv(hm[["carpet"]],file = file.path(REPORT_DIR,"heatmap_PC_all.csv"))
 
-#
-#
-# #
-# 
-# load("sub_samples.Rda")
-# 
-# 
-# pred_ids = which(all_data[[1]]$hg19$barcodes %in% rownames(sub_samples))
-# 
-# 
-# 
-# pred_labels = read.csv("predicted.csv", sep="",header = T)
-# 
-# label = pred_labels$x[pred_ids]
-# 
-# fixed_samples = c()
-# for(clust_id in unique(label)){
-#   if(clust_id==0) next;
-#   sample_ids_per_cluster = which(label==clust_id)
-#   fixed_samples = c(fixed_samples, sample(sample_ids_per_cluster,min(300,length(sample_ids_per_cluster))))
-# }
-# 
-# 
-# 
-# MAT1234 = t(sub_samples[fixed_samples,])
-# MAT1234 = MAT1234[match(unique(rownames(MAT1234)),rownames(MAT1234)),]
-# dim(MAT1234)
-# 
-# 
-# 
-# heat_obj_pc<-plot_heat_genes(data = MAT1234,labels = label[fixed_samples],"PC")
-# 
-# 
-# ordered_labl = heat_obj_pc[["lab"]]
-# 
-# colors = getColors(length(unique(ordered_labl)))
-# colors = colors[ordered_labl]
-# ordered_freq = table(factor(ordered_labl,levels=unique(ordered_labl)))
-# a = cumsum(ordered_freq)
-# b = c(0,  a[-length(a)])
-# 
-# pos = round((a+b)/2)
-# 
-# text_lab = rep(NA,dim(MAT1234)[2])
-# 
-# text_lab[pos] = unique(ordered_labl)
-# 
-# myPalette <-colorRampPalette(c("darkblue","blue", "white","red","darkred"))
-# heatmap.2(heat_obj_pc[["mat"]], 
-#           trace="none", col=myPalette,Colv = FALSE,  srtCol=0, 
-#           ColSideColors=colors, cexCol = 1,cexRow = 0.9,labCol = text_lab,
-#           dendrogram="none",scale="row",density.info="none",keysize = 1,
-#           colsep=a[1:(length(unique(colors))-1)], sepcolor="green")
-# 
-# 
