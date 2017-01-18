@@ -1,6 +1,6 @@
 # scClust
 
-##Executing the script:
+##Executing the script (Linux only):
 
 
 1. Download pbmc 68K data samples from:
@@ -13,3 +13,7 @@ and put the pbmc68k_data.rds file in the data directory.
 Update the working directory and data directory paths in the script.
 
 3. Obtain heatmap by executing the downstream_strict.R script.
+
+
+##Executing the script (Windows):
+Download louvain binaries inside the louvain directory before executing the main script.
