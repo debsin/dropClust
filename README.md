@@ -3,7 +3,7 @@
 ##Executing the script (Linux only):
 
 
-1. Download pbmc 68K data samples fromedewr:
+1. Download pbmc 68K data samples from:
 http://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc68k_rds/pbmc68k_data.rds
 and put the pbmc68k_data.rds file in the data directory.
 
