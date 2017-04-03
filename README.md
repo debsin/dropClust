@@ -1,4 +1,4 @@
-# scClust
+# dropClust
 
 ##Executing the script (Linux only):
 
