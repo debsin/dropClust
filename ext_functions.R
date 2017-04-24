@@ -1,57 +1,4 @@
 
-#Read 10X data
-read10X<-function(data.dir=NULL){
-  full_data <- list()
-  for(i in seq_along(data.dir)){
-    run <- data.dir[i]
-    if (!dir.exists(run)){
-      stop("Directory provided does not exist")
-    }
-    
-    if(!grepl("\\/$", run)){
-      run <- paste(run, "/", sep = "")
-    }
-    
-    barcode.loc <- paste(run, "barcodes.tsv", sep ="")
-    gene.loc <- paste(run, "genes.tsv", sep ="")
-    matrix.loc <- paste(run, "matrix.mtx", sep ="")
-    
-    if (!file.exists(barcode.loc)){
-      stop("Barcode file missing")
-    }
-    if (!file.exists(gene.loc)){
-      stop("Gene name file missing")
-    }
-    if (!file.exists(matrix.loc)){
-      stop("Expression matrix file missing")
-    }
-    
-    data <- readMM(matrix.loc)
-    cell.names <- readLines(barcode.loc)
-    gene.names <- readLines(gene.loc)
-    if(all(grepl("\\-1$", cell.names)) == TRUE) {
-      cell.names <- as.vector(as.character(sapply(cell.names, extract_field, 1, delim = "-")))
-    }
-    rownames(data) <- make.unique(as.character(sapply(gene.names, extract_field, 2, delim = "\\t"))) 
-    
-    if(is.null(names(data.dir))){
-      if(i < 2){
-        colnames(data) <- cell.names
-      }
-      else {
-        colnames(data) <- paste0(i, "_", cell.names, sep = "") 
-      }
-    } else {
-      colnames(data) <- paste0(names(data.dir)[i],"_",cell.names) 
-    }
-    full_data <- append(full_data, data)
-  }
-  full_data <- do.call(cbind, full_data)
-  return(full_data)
-  
-}
-
-
 # call LSH python script
 
 call_lsh<-function(){
@@ -60,6 +7,7 @@ call_lsh<-function(){
  
 }
 
+# call Louvian script
 call_louvain<-function(){
   
   cat("Assiging Louvain Communities...................... please wait....\n")
@@ -73,8 +21,8 @@ call_louvain<-function(){
   #return(output)
 }
 
-
-method_scClust<-function(data_mat, s_ids,true_id){
+# LSH + Louvain partition
+dropClust_sampling<-function(data_mat, s_ids,true_id){
   
   ranger_preprocess(data_mat, s_ids)
   
@@ -83,18 +31,31 @@ method_scClust<-function(data_mat, s_ids,true_id){
   lsh_t = Sys.time()
   call_lsh()
   
-  
   call_louvain()
-  cat(paste("LSH + Louvain Time... ", difftime(Sys.time(),lsh_t, units = "mins"),"\n"))
+  
   output <- read.csv("output.graph", sep="",header = F)
 
-  return(sc_metric(output$V2+1, as.numeric(true_id)[s_ids]))
+  sc_metric(output$V2+1, as.numeric(true_id)[s_ids])
+  
+  ## READ LOUVEN CLUSTERS FOR SUB-SAMPLING
+ 
+  subsamples_louvain<-sampling()
+  
+  cat(paste("number of sub-samples:",length(subsamples_louvain),"\n"))
+  
+  write.csv(x = subsamples_louvain, file = "subsamples_idx",quote = F,row.names =F)
+  write.csv(x = data_mat$barcodes[sample_ids[subsamples_louvain]], file = "barcodes_subsamples.csv",quote = F,row.names =F)
+  
+  table(true_cls_id[sample_ids[subsamples_louvain]])
+  
+  return(subsamples_louvain)
 }
 
 
 ranger_preprocess<-function(data_mat, s_ids){
   
   ngenes_keep = 1000
+  write.csv(x = data_mat$gene_symbols, file = "gene_symbols.csv",quote = F,row.names =F)
   #l<-.normalize_by_umi(data_mat)   
   l<-.normalize_by_umi_2(data_mat)   
   m_n<-l$m
@@ -107,7 +68,7 @@ ranger_preprocess<-function(data_mat, s_ids){
   df$used<-df$dispersion_norm >= disp_cut_off
   
   features = head(order(-df$dispersion_norm),ngenes_keep)
-  system("rm genes")
+  system("rm genes",ignore.stderr = T)
   write.csv(features, file = "genes", quote = F,row.names = F)
   write.csv(l$use_genes[features], file = "genes_used_all", quote = F,row.names = F)
   
@@ -118,13 +79,12 @@ ranger_preprocess<-function(data_mat, s_ids){
   m_n_68K<-m_n[,features]
   m_filt<-Matrix(log2(m_n_68K+1),sparse = T)
   cat(paste("Writing Log Normalized whole_matrix, DIM:",dim(m_filt)[1], dim(m_filt)[2],"...\n"))
-  system("rm whole_matrix")
+  system("rm whole_matrix",ignore.stderr = T)
   writeMM(m_filt,file="whole_matrix")
   
-  cat("Subset Genes for Matirx...\n")
   m_n_1000<-m_filt[s_ids,]
   cat(paste("Writing Log Normalized sub_matrix, DIM:",dim(m_n_1000)[1], dim(m_n_1000)[2],"...\n"))
-  system("rm sub_matrix")
+  system("rm sub_matrix",ignore.stderr = T)
   writeMM(m_n_1000,file="sub_matrix")
   
 }
@@ -136,6 +96,9 @@ sc_metric<-function(pred_ids,true_ids,show_tab = T){
   return(c(r.i.,"Purity" = ClusterPurity(pred_ids,true_ids)))
 }
 
+ClusterPurity <- function(clusters, classes) {
+  sum(apply(table(classes, clusters), 2, max)) / length(clusters)
+}
 
 
 
@@ -176,10 +139,36 @@ pc_genes<-function(mat,top=200){
   gene_max<-apply(gene_pca, 1, max) 
   rank_gene <- order(gene_max, decreasing=TRUE)
   
-  write.csv(x = rank_gene[1:top], file = "subgene_idx",quote = F,row.names =F)
-  write.csv(x = genes2K$x[rank_gene[1:top]], file = "subgene_idx_68K",quote = F,row.names =F)
   
-  return(rank_gene[1:top])
+  return(head(rank_gene,top))
+}
+
+ss_clustering<-function(ss_sel_genes){
+  d = dist(ss_sel_genes)
+  hc<-fastcluster::hclust(d,method = "average")
+  
+  hc_labs<-cutreeDynamic(dendro = hc, cutHeight = NULL,
+                         minClusterSize = 20,
+                         method = "hybrid", deepSplit = 3,
+                         pamStage = TRUE,  distM = as.matrix(d), maxPamDist = 0,
+                         verbose = 0)
+  
+  cat(paste("Number of Clusters:", length(unique(hc_labs))-1),"\n")
+  
+  
+  outliers_ids <- which(hc_labs==0)
+  subsamples_louv_68K = sample_ids[subsamples_louvain[-outliers_ids]]
+  write.csv(x = subsamples_louv_68K, file = "subsamples_louv_68K",quote = F,row.names =F)
+  write.csv(x = hc_labs, file = "hc_labs.csv",quote = F,row.names =F)
+  
+  cat("Sub-sample Metric\n")
+  print(sc_metric(hc_labs[-outliers_ids], true_cls_id[subsamples_louv_68K],show_tab = F))
+  
+  
+  hc_labs_clean  = hc_labs[-outliers_ids]
+  cat(paste("Predicted Clusters:",length(unique(hc_labs_clean))))
+  
+  return(list("labels"=hc_labs_clean,"outliers" = outliers_ids))
 }
 
 # ---------------------------------------------
@@ -195,7 +184,8 @@ pc_genes<-function(mat,top=200){
   
   x_filt<-mat[,x_use_genes]
   gene_symbols = gene_symbols[x_use_genes]
-  print(dim(x_filt))
+  cat("Dimensions os filtered Matrix:")
+  cat(paste(dim(x_filt),"\n"))
   rs<-rowSums(x_filt)
   rs_med<-median(rs)
   x_norm<-x_filt/(rs/rs_med)
@@ -236,9 +226,7 @@ pc_genes<-function(mat,top=200){
   df
 }
 
-ClusterPurity <- function(clusters, classes) {
-  sum(apply(table(classes, clusters), 2, max)) / length(clusters)
-}
+
 
 getPalette = colorRampPalette(brewer.pal(9, "Set1"))
 getColors<-function(n){
@@ -252,3 +240,23 @@ getColors<-function(n){
   }
   return(mycolors[1:n])
 } 
+
+all_plot<-function(plot_proj_df,filename, title){
+  x.mean = aggregate(plot_proj_df$Y1, list(plot_proj_df$color), median)[,-1]
+  y.mean = aggregate(plot_proj_df$Y2, list(plot_proj_df$color), median)[,-1]
+  
+  colorcount_t = length(unique(plot_proj_df$color))
+  
+  pdf(filename,width = 6,height = 5)
+  
+  p<-ggplot(plot_proj_df,aes(Y1,Y2,col= color))
+  p2<-p+ geom_point(size=0.3)  + scale_colour_manual(values =  getColors(colorcount_t))+
+    ggtitle(title)+
+    annotate("text", x = x.mean, y = y.mean, label = levels(plot_proj_df$color), size =2.75 )+
+    guides(colour = guide_legend(override.aes = list(size=3,alpha=1)))+ylab("t-SNE 2")+xlab("t-SNE 1")+
+    theme_classic()
+  
+  print(p2)
+  
+  dev.off()
+}
