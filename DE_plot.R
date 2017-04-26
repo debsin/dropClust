@@ -12,7 +12,7 @@ REPORT_DIR  <- paste0(getwd(),"/report/")       # SPECIFY HERE
 
 source("libraries.R") 
 source("ext_functions.R") 
-source("DE_functions_v2.R") 
+source("DE_functions.R") 
 
 
 ### WARNING!!!! Check number of cores
