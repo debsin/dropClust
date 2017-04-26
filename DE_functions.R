@@ -1,4 +1,4 @@
-source("NODES.r")
+source("NODES.R")
 ##
 
 DE_genes <- function(data,labels,max,lfc_th,q_th )
