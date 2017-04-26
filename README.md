@@ -9,7 +9,7 @@
 
 ## Executing the script (Linux):
 
-1. Download pbmc 68K dataset from:
+1. Download PBMC 68K dataset from:
 http://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc68k_rds/pbmc68k_data.rds
 and put the pbmc68k_data.rds file in the "data" directory. The annotation file has already been placed there.
 
