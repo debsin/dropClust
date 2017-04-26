@@ -6,7 +6,6 @@
 3. R dependencies will be installed automatically when executing the main script.
 4. C compiler for Windows users.
 
-Clone/Download the "dropClust" repository.
 
 ## Executing the script (Linux):
 
