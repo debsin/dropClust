@@ -4,7 +4,7 @@
 1. Python  (>=2.7), R
 2. Python sklearn package
 3. R dependencies will be installed automatically when executing the main script.
-4. C compiler for Windows users.
+4. C++ compiler for Windows users.
 
 
 ## Executing the script (Linux):
