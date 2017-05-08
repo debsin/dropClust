@@ -11,6 +11,11 @@ REPORT_DIR  <- paste0(getwd(),"/report/")       # SPECIFY HERE
 
 
 source("libraries.R") 
+#-------------
+# Load additional Libraries for parallel processing
+library(foreach)
+library(doParallel)
+
 source("ext_functions.R") 
 source("DE_functions.R") 
 
