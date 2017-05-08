@@ -1,3 +1,9 @@
+list.of.packages <- c("Matrix", "ggplot2", "Rtsne", "svd", "dplyr", "plyr",
+                      "data.table", "mclust", "flexclust", "reshape2",
+                      "irlba","dynamicTreeCut", "RColorBrewer")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
 # ----------------------------
 # load relevant libraries
 # ----------------------------
@@ -14,7 +20,4 @@ library(reshape2)
 library(irlba)
 library(dynamicTreeCut)
 library(RColorBrewer)
-library(gplots)
-library(foreach)
-library(doParallel)
 # -------------------------------------
