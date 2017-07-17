@@ -112,7 +112,7 @@ PROJ = matrix(NA, nrow=nrow(INDEX), ncol=2)
 for( i in 1:nrow(INDEX))
 {
   maj_id = clust_col[i]
-  maj_col = which(ss_labels[INDEX[i,]]==maj_id)
+  maj_col = which(ss_clusters$labels[INDEX[i,]]==maj_id)
   
   if(length(maj_col)==1){
     PROJ[i,] = Matrix::colMeans(tt[INDEX[i,],])
