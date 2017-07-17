@@ -184,7 +184,7 @@ ss_clustering<-function(ss_sel_genes){
   
   x_filt<-mat[,x_use_genes]
   gene_symbols = gene_symbols[x_use_genes]
-  cat("Dimensions os filtered Matrix:")
+  cat("Dimensions of filtered Matrix:")
   cat(paste(dim(x_filt),"\n"))
   rs<-rowSums(x_filt)
   rs_med<-median(rs)
