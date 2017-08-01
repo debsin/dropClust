@@ -1,7 +1,7 @@
 rm(list=ls()) # clear workspace
 
 
-# specify paths and load functions
+# Specify paths and load functions
 # -------------------------------------
 setwd("~/Projects/dropClust/")
 DATA_DIR <- "~/Projects/dropClust/data/"           # SPECIFY HERE
@@ -21,7 +21,7 @@ source("DE_functions.R")
 
 
 ### WARNING!!!! Check number of cores
-registerDoParallel(20)
+registerDoParallel(7)
 
 #Read raw data
 pbmc_68k <- readRDS(file.path(DATA_DIR,'pbmc68k_data.rds'))
@@ -81,13 +81,13 @@ save(label, file= "pred_label.Rdata")
 ID_all = pred_labels$x[fixed_samples]
 
 
-#Cells of interest
-GRP1 = c(3,5,6,7,13)
-GRP2 = c(1,2,10)
-GRP3 = c(8,9,11,14)
-GRP4 = c(5,7)
+# Cells of interest
+# GRP1 = c(3,5,6,7,13)
+# GRP2 = c(1,2,10)
+# GRP3 = c(8,9,11,14)
+# GRP4 = c(5,7)
 GRP = c(1:14)
-GRP=GRP4
+
 int_cells  = which(ID_all %in% GRP)
 
 ID = ID_all[int_cells]
