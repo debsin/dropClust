@@ -1,4 +1,12 @@
-# dropClust
+# dropClust: Efficient clustering of ultra-large scRNA-seq data
+Authors: _Debajyoti Sinha, Akhilesh Kumar, Himanshu Kumar, Sanghamitra Bandyopadhyay, Debarka Sengupta_
+
+### The preprint version of the software is aviable online at 
+http://www.biorxiv.org/content/early/2017/07/31/170308
+
+
+### Refer to the R execution markdown file [here](https://debsin.github.io/dropClust/index.html)
+
 
 ## Prerequisites:
 1. Python  (>=2.7), R
@@ -19,6 +27,7 @@ and put the pbmc68k_data.rds file in the "data" directory. The annotation file h
 3. Obtain the cell-type specific genes and the heatmap by executing the DE_plot.R script.
 
 
-## Executing the script (Windows):
+## Executing the script (Windows or other Linux distributions):
 
-Build windows executable from "louvain/src" files inside the "louvain" directory before executing the R scripts.
+Build windows executable/binaries from "louvain/src" files inside the "louvain" directory before executing the main R script.
+
