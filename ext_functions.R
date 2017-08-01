@@ -1,27 +1,25 @@
-
+# ---------------------------------------------
 # call LSH python script
-
+# ---------------------------------------------
 call_lsh<-function(){
  
   system('python lsh/lsh.py',intern=T)
  
 }
 
+# ---------------------------------------------
 # call Louvian script
+# ---------------------------------------------
 call_louvain<-function(){
   
   cat("Assiging Louvain Communities...................... please wait....\n")
   system("rm output.graph",ignore.stderr = T)
   system(paste("./louvain_script.sh", LOUVAIN_DIR,  "src_dst_lsh.csv", "output.graph",sep = " "))
-  #output <- read.csv("output.graph", sep="",header = F)
-  
-  #./convert -i ~/Projects/scClust/git/scClust/temp_graph.csv -o ~/Projects/scClust/git/scClust/graph.bin
-  #./community ~/Projects/scClust/git/scClust/graph.bin -l -1 -q 0.0000001 -v > graph.tree
-  #./hierarchy graph.tree -l 1 > ~/Projects/scClust/git/scClust/output.graph
-  #return(output)
 }
 
+# ---------------------------------------------
 # LSH + Louvain partition
+# ---------------------------------------------
 dropClust_sampling<-function(data_mat, s_ids,true_id){
   
   ranger_preprocess(data_mat, s_ids)
@@ -52,15 +50,20 @@ dropClust_sampling<-function(data_mat, s_ids,true_id){
 }
 
 
+# ---------------------------------------------
+# Preprocessesing : similar to pipeline
+# described in Zheng et al.
+# ---------------------------------------------
+
 ranger_preprocess<-function(data_mat, s_ids){
   
   ngenes_keep = 1000
   write.csv(x = data_mat$gene_symbols, file = "gene_symbols.csv",quote = F,row.names =F)
-  #l<-.normalize_by_umi(data_mat)   
-  l<-.normalize_by_umi_2(data_mat)   
+  #l<-normalize_by_umi(data_mat)   
+  l<-normalize_by_umi_2(data_mat)   
   m_n<-l$m
   cat("Select variable Genes...\n")
-  df<-.get_variable_gene(m_n)
+  df<-get_variable_gene(m_n)
   gc()
   cat("Sort Top Genes...\n")
   disp_cut_off<-sort(df$dispersion_norm,decreasing=T)[ngenes_keep]
@@ -89,6 +92,9 @@ ranger_preprocess<-function(data_mat, s_ids){
   
 }
 
+# ---------------------------------------------
+# External Metrics for clustering evaluation
+# ---------------------------------------------
 sc_metric<-function(pred_ids,true_ids,show_tab = T){
  dm<-table(pred_ids,true_ids)
  if(show_tab==T){print(dm)}
@@ -101,6 +107,9 @@ ClusterPurity <- function(clusters, classes) {
 }
 
 
+# ---------------------------------------------
+# Custom sampling using exponential decay 
+# ---------------------------------------------
 
 sampling<-function(pinit=0.195, pfin = 0.9, K=500){
   output <- read.csv("output.graph", sep="",header = F)
@@ -124,6 +133,10 @@ sampling<-function(pinit=0.195, pfin = 0.9, K=500){
   return(subsamples_louvain)
 }
 
+# ---------------------------------------------
+# pc loading genes selection
+# ---------------------------------------------
+
 pc_genes<-function(mat,top=200){
   nc = 50
   PRR <- irlba(as.matrix(mat),nc)
@@ -142,6 +155,12 @@ pc_genes<-function(mat,top=200){
   
   return(head(rank_gene,top))
 }
+
+
+# ---------------------------------------------
+# Clustering of sub-samples using 
+# Hierarchical Clustering
+# ---------------------------------------------
 
 ss_clustering<-function(ss_sel_genes){
   d = dist(ss_sel_genes)
@@ -172,11 +191,11 @@ ss_clustering<-function(ss_sel_genes){
 }
 
 # ---------------------------------------------
-# normalize the gene barcode matrix by umi 
-# filter based on read count first
+# Normalize the gene barcode matrix by umi 
+# Filter based on read count first
 # ---------------------------------------------
 
-.normalize_by_umi_2 <-function(x) {
+normalize_by_umi_2 <-function(x) {
   mat  = x$mat
   gene_symbols = x$gene_symbols
   cs <- colSums(mat>2)
@@ -193,25 +212,11 @@ ss_clustering<-function(ss_sel_genes){
 }
 
 
-
-# ---------------------------------------------
-# normalize the gene barcode matrix by umi
-# ---------------------------------------------
-.normalize_by_umi <-function(x) {
-  cs <- colSums(x)
-  x_use_genes <- which(cs >= 1)
-  x_filt<-x[,x_use_genes]
-  rs<-rowSums(x_filt)
-  rs_med<-median(rs)
-  x_norm<-x_filt/(rs/rs_med)
-  list(m=x_norm,use_genes=x_use_genes)
-}
-
 # --------------------------------------------------
-# get variable genes from normalized UMI counts
+# Get variable genes from normalized UMI counts
 # --------------------------------------------------
 # m: matrix normalized by UMI counts
-.get_variable_gene<-function(m) {
+get_variable_gene<-function(m) {
   
   df<-data.frame(mean=colMeans(m),cv=apply(m,2,sd)/colMeans(m),var=apply(m,2,var))
   df$dispersion<-with(df,var/mean)
@@ -227,6 +232,9 @@ ss_clustering<-function(ss_sel_genes){
 }
 
 
+# --------------------------------------------------
+# Palette for predicted/true clusters
+# --------------------------------------------------
 
 getPalette = colorRampPalette(brewer.pal(9, "Set1"))
 getColors<-function(n){
@@ -240,6 +248,10 @@ getColors<-function(n){
   }
   return(mycolors[1:n])
 } 
+
+# --------------------------------------------------
+# 2D - plots
+# --------------------------------------------------
 
 all_plot<-function(plot_proj_df,filename, title){
   x.mean = aggregate(plot_proj_df$Y1, list(plot_proj_df$color), median)[,-1]
