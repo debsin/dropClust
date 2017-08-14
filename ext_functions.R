@@ -14,7 +14,7 @@ call_louvain<-function(){
   
   cat("Assiging Louvain Communities...................... please wait....\n")
   system("rm output.graph",ignore.stderr = T)
-  system(paste("./louvain_script.sh", LOUVAIN_DIR,  "src_dst_lsh.csv", "output.graph",sep = " "))
+  system(paste("sh louvain_script.sh", LOUVAIN_DIR,  "src_dst_lsh.csv", "output.graph",sep = " "))
 }
 
 # ---------------------------------------------
