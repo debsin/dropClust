@@ -240,7 +240,7 @@ init_quality(Graph *g, unsigned short nbc) {
 
 
 int
-louvain(int argc, char **argv) {
+main(int argc, char **argv) {
 
   //srand(time(NULL)+getpid());
   srand(100);
