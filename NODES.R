@@ -4,7 +4,11 @@ NODES1<-function(data,group,r=20,smooth_points = 10000, zper = 0.5)
 {
   
   # install require libraries
-  if (!require("MetaDE")) install.packages("MetaDE",repos = "http://cran.us.r-project.org")
+  if (!require("MetaDE")) {
+    source("https://bioconductor.org/biocLite.R")
+    biocLite("impute")
+    install.packages("MetaDE",repos = "http://cran.us.r-project.org")
+  }
   
   require(MetaDE)
   
