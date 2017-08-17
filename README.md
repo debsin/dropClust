@@ -10,12 +10,12 @@ http://www.biorxiv.org/content/early/2017/07/31/170308
 
 ## Prerequisites:
 1. Python  (>=2.7), R
-2. Python sklearn package
+2. Python sklearn, igraph packages
 3. R dependencies will be installed automatically when executing the main script.
 4. C++ compiler for Windows users.
 
 
-## Executing the script (Linux):
+## Executing the script (Linux:Ubuntu):
 
 1. Download PBMC 68K dataset from:
 http://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc68k_rds/pbmc68k_data.rds
