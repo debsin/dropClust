@@ -4,17 +4,19 @@ rm(list=ls()) # clear workspace
 # Specify paths and load functions
 # -------------------------------------
 setwd("~/Projects/dropClust/")
-DATA_DIR <- "~/Projects/dropClust/data/"           # SPECIFY HERE
+DATA_DIR <- paste0(getwd(),"/data/")          # SPECIFY HERE
 FIG_DIR <-  paste0(getwd(),"/plots/")        # SPECIFY HERE
 REPORT_DIR  <- paste0(getwd(),"/report/")       # SPECIFY HERE
 
 
 
 source("libraries.R") 
+library(gplots)
 #-------------
 # Load additional Libraries for parallel processing
 library(foreach)
 library(doParallel)
+
 
 source("ext_functions.R") 
 source("DE_functions.R") 
@@ -35,13 +37,13 @@ table(true_class)
 
 
 #Normalize by umi counts (median)
-k<-.normalize_by_umi_2(pbmc_68k$all_data[[1]]$hg19)  
+k<-normalize_by_umi_2(pbmc_68k$all_data[[1]]$hg19)  
 
 #save(k, file = "~/Projects/scClust-Final/data/68K_7K.Rda")
 #writeMM(k$m,file = "~/Projects/scClust-Final/data/68K_7K.smat")
 
 load("proj_68.Rda")
-plot(PROJ)
+plot(dropClust_df$V1,dropClust_df$V2,col=dropClust_df$clust_col)
 
 m_n<-k$m
 
@@ -100,7 +102,7 @@ DE_genes_nodes_all  <- DE_genes(data = MAT123[,int_cells] ,labels = label[int_ce
 cat(paste("DE Time:", difftime(Sys.time(),s, units = "mins"),"...\n"))
 
 
-# Mat_ct  = MAT123[DE_genes_nodes_all[["genes"]],int_cells]
+Mat_ct  = MAT123[DE_genes_nodes_all[["genes"]],int_cells]
 
 sink(file.path(REPORT_DIR,"DE_list.txt"))
 DE_genes_nodes_all[["DE_res"]]
