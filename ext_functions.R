@@ -116,11 +116,7 @@ sampling<-function(pinit=0.195, pfin = 0.9, K=500){
   output<-output+1
   oldseed = .Random.seed
   set.seed(0)
-  cluster_freq = table(output$V2)#tdf_n_1000$cls_id[sample_ids]
-  #prop = (1-exp(-30/cluster_freq))*cluster_freq
-  # pinit=0.1
-  # pfin = 0.8
-  # K=500
+  cluster_freq = table(output$V2)
   prop = round((pinit - exp(-cluster_freq/K) * (pinit - pfin) )* cluster_freq)
   t(rbind(cluster_freq,prop))
   prop = melt(prop)$value
