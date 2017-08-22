@@ -88,7 +88,7 @@ ID_all = pred_labels$x[fixed_samples]
 # GRP2 = c(1,2,10)
 # GRP3 = c(8,9,11,14)
 # GRP4 = c(5,7)
-GRP = c(1:14)
+GRP = c(1:max(pred_labels))
 
 int_cells  = which(ID_all %in% GRP)
 
