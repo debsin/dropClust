@@ -5,7 +5,7 @@ Authors: _Debajyoti Sinha, Akhilesh Kumar, Himanshu Kumar, Sanghamitra Bandyopad
 http://www.biorxiv.org/content/early/2017/07/31/170308
 
 
-### Refer to the R execution markdown file [here](https://debsin.github.io/dropClust/index.html)
+### Refer to the R execution markdown file on 68K PBMC data [here](https://debsin.github.io/dropClust/index.html)
 
 
 ## Prerequisites:
@@ -15,7 +15,7 @@ http://www.biorxiv.org/content/early/2017/07/31/170308
 4. C++ compiler for Windows users.
 
 
-## Executing the script (Linux):
+## Executing the script (Linux:Ubuntu):
 
 1. Download PBMC 68K dataset from:
 http://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc68k_rds/pbmc68k_data.rds
