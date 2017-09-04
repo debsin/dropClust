@@ -16,7 +16,7 @@ Getting Started
 
 <http://www.biorxiv.org/content/early/2017/07/31/170308>
 
-#### Refer to the R execution markdown file [here](https://debsin.github.io/dropClust/index.html)
+#### Refer to the R execution markdown file in the 68K PBMC data [here](https://debsin.github.io/dropClust/index.html)
 
 ### Prerequisites:
 
