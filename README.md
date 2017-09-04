@@ -43,7 +43,7 @@ dropClust Tutorial
 Getting Started
 ---------------
 
-The goal of this tutorial is to guide the users to use dropClust. Most of the specific parameters have been explained so that users can adjust them specific to particular datasets or as per requirement. An analysis has been described in this tuitorial to identify cell type specific genes. The data used in this tutorial is available at <https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/jurkat:293t_50:50>. The annotations of the data has been obtained from <https://images.nature.com/original/nature-assets/ncomms/2017/170116/ncomms14049/extref/ncomms14049-s3.xlsx>.
+The goal of this tutorial is to guide the users to use dropClust. Most of the specific parameters have been explained so that users can adjust them specific to particular datasets or as per requirement. An analysis has been described in this tuitorial to identify cell type specific genes. The data used in this tutorial is available at <http://cf.10xgenomics.com/samples/cell-exp/1.1.0/jurkat:293t_50:50/jurkat:293t_50:50_filtered_gene_bc_matrices.tar.gz>. The annotations of the data has been obtained from <https://images.nature.com/original/nature-assets/ncomms/2017/170116/ncomms14049/extref/ncomms14049-s3.xlsx>.
 
 #### Specify paths
 
