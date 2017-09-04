@@ -328,7 +328,7 @@ ID = label[int_cells]
 
 #### Identify DE genes
 
-Set argument `max = 0` for all DE genes, otherwise specify top `max` genes. The criteria to identify a gene which is significantly expressed is determined using two criteria. In this eaxample, The adjusted p\_val (`q_th`) is set to &lt; `0.002` and log2 fold change (`lfc_th`) is set to &lt; `1.5`. Restrict/relax the `DE_genes()` function input parameters to change the total number of cell type specific genes. The function removes potentially poor genes before the DE analysis. By default, the DE analysis is performed on those genes which have UMI count &gt; 4 in atleast `0.5`% of the total number of cells in the input dataset.
+Set argument `max = 0` for all DE genes, otherwise specify top `max` genes. The criteria to identify a gene which is significantly expressed is determined using two criteria. In this eaxample, The adjusted p\_val (`q_th`) is set to &lt; `0.001` and log2 fold change (`lfc_th`) is set to &lt; `1.2`. Restrict/relax the `DE_genes()` function input parameters to change the total number of cell type specific genes. The function removes potentially poor genes before the DE analysis. By default, the DE analysis is performed on those genes which have UMI count &gt; 4 in atleast `0.5`% of the total number of cells in the input dataset.
 
 ``` r
 DE_genes_nodes_all  <- DE_genes(raw_data = MAT123[,int_cells] ,labels = ID, max = 0, lfc_th = 1.2, q_th = 0.001, min.count=4, min.cell.per=0.5) 
