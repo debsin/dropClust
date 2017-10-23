@@ -39,7 +39,7 @@ dropClust_sampling<-function(data_mat, s_ids,true_id){
   
   output <- read.csv("output.graph", sep="",header = F)
 
-  sc_metric(output$V2+1, as.numeric(true_id)[s_ids])
+  #sc_metric(output$V2+1, as.numeric(true_id)[s_ids])
   
   ## READ LOUVEN CLUSTERS FOR SUB-SAMPLING
  
@@ -139,7 +139,9 @@ get_variable_gene<-function(m) {
   df
 }
 
+# ---------------------------------------------
 # Filter Cells
+# ---------------------------------------------
 filter_cells<-function(data,th){
   #Return good cells based on IQR rule
   rs<-rowSums(data$mat)
@@ -255,7 +257,9 @@ ss_clustering<-function(ss_sel_genes, mincl = 20){
   return(list("labels"=hc_labs_clean,"outliers" = outliers_ids))
 }
 
+# ---------------------------------------------
 # Read 10X data
+# ---------------------------------------------
 read10X<-function(data.dir=NULL){
   full_data <- list()
   for(i in seq_along(data.dir)){
@@ -319,7 +323,7 @@ extract_field=function(string,field=1,delim="_") {
 # Optimize parameter 'pinit' for 
 # exponential decay sampling
 # ---------------------------------------------
-optimized_Pinit<-function(nsamples = 500){
+optimized_Pinit<-function(nsamples = 500, K=500, pfin = 0.9){
   oldseed = .Random.seed
   set.seed(1234) # The user can use any seed.
   dimension <- 1
@@ -329,15 +333,12 @@ optimized_Pinit<-function(nsamples = 500){
   upper <- rep(1.0, dimension)
   
   
-  
   pin_find<-function(p = par,MAX_c = nsamples){
     output <- read.csv("output.graph", sep="",header = F)
     output<-output+1
     oldseed = .Random.seed
     set.seed(0)
     cluster_freq = table(output$V2)
-    pfin = 0.9
-    K=500
     pinit = p[1]
     #pfin = p[2]
     prop = round((pinit - exp(-cluster_freq/K) * (pinit - pfin) )* cluster_freq)
@@ -458,8 +459,10 @@ all_plot<-function(plot_proj_df,filename, title){
 }
 
 source("NODES.R")
-##
-
+# ---------------------------------------------
+# Sample fixed number of random 
+# cells from clusters
+# ---------------------------------------------
 sample_from_cluster<-function(pred_labels, size){
   set.seed(0)
   fixed_samples = c()
@@ -473,6 +476,9 @@ sample_from_cluster<-function(pred_labels, size){
   return(fixed_samples)
 }
 
+# ---------------------------------------------
+# Score DE genes for each pair of clusters
+# ---------------------------------------------
 DE_genes <- function(raw_data,labels,max=0,lfc_th,q_th, min.count=3, min.cell.per=0.5 )
 {
   #dim(data)
@@ -531,6 +537,9 @@ DE_genes <- function(raw_data,labels,max=0,lfc_th,q_th, min.count=3, min.cell.pe
   return(RES)
 }
 
+# ---------------------------------------------
+# List cell type specific genes
+# ---------------------------------------------
 find_ct_genes<-function(ID, DE_genes_nodes_all, Mat_ct){
   all_ct_genes = c()
   ct_genes_list = c()
@@ -570,6 +579,10 @@ find_ct_genes<-function(ID, DE_genes_nodes_all, Mat_ct){
   return(list("all_ct_genes" = all_ct_genes, "ct_genes_list"=ct_genes_list))
 }
 
+# ---------------------------------------------
+# Plot heatmap of cell-type specific genes
+# for the samples from each clusters
+# ---------------------------------------------
 plot_heat_genes <- function(data,label,filename)
 {
   
@@ -605,6 +618,9 @@ plot_heat_genes <- function(data,label,filename)
   
 }
 
+# ---------------------------------------------
+# Write celltype specific genes
+# ---------------------------------------------
 write_ct_genes<-function(data, filename){
   n.obs <- sapply(data, length)
   seq.max <- seq_len(max(n.obs))
@@ -614,6 +630,10 @@ write_ct_genes<-function(data, filename){
   write.csv(gene.df, file = filename,quote = F)
 }
 
+# ---------------------------------------------
+# Wtite DE genes scores for each 
+# pair of clusters
+# ---------------------------------------------
 write_de_pairs<-function(filename, data){
   sink(filename)
   print(data)
