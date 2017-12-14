@@ -31,24 +31,3 @@ es = EdgeSeq(g)
 
 print "writing graph edgelist..."
 g.write_edgelist("src_dst_lsh.csv")
-
-
-
-
-#import pandas as pd
-#LLL = list(lsh_trees[0,])
-#LLL = list(lsh_trees[0,])
-
-#LLLsr = pd.Series(LLL)
-#LLLsr.value_counts()
-# plt.plot(LLLsr.value_counts())
-#plt.show()
-
-
-#import louvain
-
-
-
-#part = louvain.find_partition(g, method='Modularity');
-
-#res_parts = louvain.bisect(G, method='CPM', resolution_range=[0,1]);

@@ -30,18 +30,3 @@ lshf.fit(a[idx[:,None],idx_gene])
 distances, indices = lshf.kneighbors(a[:,idx_gene], n_neighbors=5)
 
 np.savetxt("neigh.txt",indices)
-
-
-#lshf = LSHForest(random_state=42, n_neighbors=5)
-#lshf.fit(a[:,idx_gene])
-# K= lshf.kneighbors_graph(a[idx[:,None],idx_gene])
-# 
-# print "convert into adjacency matrix..."
-# 
-# K = K.toarray()
-# 
-# g = Graph.Adjacency(K.tolist())
-# es = EdgeSeq(g)
-# 
-# print "writing graph edgelist..."
-# g.write_edgelist("src_dst_lsh_ss.csv")

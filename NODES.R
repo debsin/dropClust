@@ -1,14 +1,16 @@
+if (!require("MetaDE")) {
+  source("https://bioconductor.org/biocLite.R")
+  biocLite("impute")
+  biocLite("Biobase")
+  install.packages("MetaDE",repos = "http://cran.us.r-project.org")
+}
+
 
 ## NODES
 NODES1<-function(data,group,r=20,smooth_points = 10000, zper = 0.5)
 {
   
-  # install require libraries
-  if (!require("MetaDE")) {
-    source("https://bioconductor.org/biocLite.R")
-    biocLite("impute")
-    install.packages("MetaDE",repos = "http://cran.us.r-project.org")
-  }
+
   
   require(MetaDE)
   
@@ -38,8 +40,8 @@ NODES1<-function(data,group,r=20,smooth_points = 10000, zper = 0.5)
     
     mipermu = data[,mipermu] ## randomize matrix columns accordingly
     
-    mean1 = rowMeans(mipermu[,1:n1]) ## get the means for random group 1
-    mean2 = rowMeans(mipermu[,(n1+1):(n1+n2)])  ## get the means for random group 2
+    mean1 = rowMeans(as.matrix(mipermu[,1:n1]) )## get the means for random group 1
+    mean2 = rowMeans(as.matrix(mipermu[,(n1+1):(n1+n2)]) ) ## get the means for random group 2
     
     sd1 = apply(mipermu[,1:n1], 1, sd) ## sd for group 1
     sd2 = apply(mipermu[,(n1+1):(n1+n2)], 1, sd) ## sd for group 2
