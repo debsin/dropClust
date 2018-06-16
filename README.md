@@ -33,7 +33,7 @@ For all platforms, the R dependencies will be installed automatically when execu
 dropClust Tutorial
 ------------------
 
-The goal of this tutorial is to guide the users to use dropClust. Most of the specific parameters have been explained so that users can adjust them specific to particular datasets or as per requirement. An analysis has been described in this tuitorial to identify cell type specific genes. 
+The goal of this tutorial is to guide the users to use dropClust. Most of the specific parameters have been explained so that users can adjust them specific to particular datasets or as per requirement. An analysis has been described in this tutorial to identify cell type specific genes. 
 
 
 
