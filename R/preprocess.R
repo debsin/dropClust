@@ -76,7 +76,6 @@ get_rank_mat <- function(matrix) {
 #' \item \code{barcodes} string vector of length equal to number of rows in \code{mat} identifying each transcriptome per row . \cr
 #' }
 #' @return named list containing two character vectors: gene names in \code{rare_genes} and barcodes in \code{rare_cells}.
-#' @import RcppEigen
 #' @export
 get_rare_genes <-function(x) {
 

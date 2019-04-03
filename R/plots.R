@@ -51,7 +51,7 @@ getColors<-function(n){
 #' @param title character, specify plot title.
 #' @return grob object
 #' @export
-#' @importFrom ggplot2 ggplot geom_point aes scale_colour_manual theme_classic theme ggtitle annotate guides guide_legend ylab xlab
+#' @importFrom ggplot2 ggplot geom_point aes scale_colour_manual theme_classic theme ggtitle annotate guides guide_legend ylab xlab aes_string
 all_plot<-function(data,filename=NA, title){
 
   temp = stats::complete.cases(data)
@@ -72,8 +72,8 @@ all_plot<-function(data,filename=NA, title){
   n_points = dim(plot_proj_df[stats::complete.cases(plot_proj_df),])[1]
 
   p_size = -0.58*log(n_points)+6.77
-  p<-ggplot(plot_proj_df)
-  p2<-p+ geom_point(aes(Y1,Y2,col= color),size=p_size)  +
+  p<-ggplot(data = plot_proj_df)
+  p2<-p+ geom_point(aes_string(x ='Y1',y = 'Y2',col= 'color'),size=p_size)  +
     scale_colour_manual(values =  getColors(colorcount_t))+
     theme_classic()+
     theme(legend.position="bottom")+

@@ -1,6 +1,6 @@
 Package: dropClust
 Type: Package
-Title: dropClust
+Title: dropClust for Single Cell Transcriptome Analysis
 Version: 2.0.0
 Author: Debajyoti Sinha, Pradyumn Sinha, Ritwik Saha, Sanghamitra Bandyopadhyay, Debarka Sengupta
 Maintainer: Debajyoti Sinha <deb.sinha@hotmail.com>
@@ -22,7 +22,6 @@ Imports: dynamicTreeCut,
          RColorBrewer,
          Rcpp (>= 0.11.3),
          RcppAnnoy,
-         RcppEigen,
          rdist,
          Rdpack,
          reshape2,
@@ -30,7 +29,7 @@ Imports: dynamicTreeCut,
          stats,
          tibble,
          utils
-Suggests: knitr
+Suggests: knitr, rmarkdown
 LinkingTo: Rcpp, RcppEigen
 RdMacros: Rdpack
 License: GPL-3 + file LICENSE
