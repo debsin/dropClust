@@ -12,8 +12,6 @@ plot_markers(de_data, gene.list, filename = NA)
 \item{gene.list}{vector of specific marker genes which is a subset of \code{data} column names.}
 
 \item{filename}{character specifying file location to save plot.}
-
-\item{cluster.id}{vector of cluster identifiers of length same as the number of rows in \code{data}.}
 }
 \value{
 list of ggplot objects

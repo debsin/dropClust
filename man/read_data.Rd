@@ -20,6 +20,8 @@ read_data(data.path, format = "10X", header = TRUE, sep = ",",
 \item{header}{TRUE/FALSE. Accept the header row to contain gene names within the csv matrix, defaults to TRUE. When FALSE, columns are labelled automatically.}
 
 \item{sep}{mention the character separator, defaults to ','.}
+
+\item{quote}{defaults to "\"".}
 }
 \value{
 list containing the 3 input files.

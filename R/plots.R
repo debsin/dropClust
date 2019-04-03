@@ -109,7 +109,6 @@ all_plot<-function(data,filename=NA, title){
 #' @description Produces violin plots for selected marker genes across predicted groups pf cells
 #' @param de_data list containing (1) matrix subset, each row corresponds to a transcriptome sample, columns represent genes; (2) predicted labels of the samples in matrix
 #' @param gene.list vector of specific marker genes which is a subset of \code{data} column names.
-#' @param cluster.id vector of cluster identifiers of length same as the number of rows in \code{data}.
 #' @param filename character specifying file location to save plot.
 #' @return list of ggplot objects
 #' @export

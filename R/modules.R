@@ -355,6 +355,7 @@ compute_2d_embedding<-function(data, sp.samples, clust.list){
 #' @param format One of c("10X", "txt"). Defaults to "10X".
 #' @param header TRUE/FALSE. Accept the header row to contain gene names within the csv matrix, defaults to TRUE. When FALSE, columns are labelled automatically.
 #' @param sep mention the character separator, defaults to ','.
+#' @param quote defaults to "\"".
 #' @return list containing the 3 input files.
 #' @importFrom utils read.csv
 #' @export
