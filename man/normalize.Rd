@@ -7,7 +7,7 @@
 normalize(x, min.count = 2, min.cell = 3)
 }
 \arguments{
-\item{x}{named list containg 3 objects: \cr
+\item{x}{named list containing 3 objects: \cr
 \enumerate{
 \item \code{mat} sparse numeric matrix with count expression data, with genes in columns. \cr
 \item \code{gene_symbols} string vector with unique gene names for each column in \code{mat}. \cr

@@ -7,7 +7,7 @@
 batcheffect.removal(amatrix, close_th = 0.01, cells_th = 0.05)
 }
 \arguments{
-\item{amatrix}{matrix, each row corresponds to a cell, whose columns depict cluster membership of its neighbours; as ruturned by \code{find_ann()} module.}
+\item{amatrix}{matrix, each row corresponds to a cell, whose columns depict cluster membership of its neighbours; as returned by \code{find_ann()} module.}
 
 \item{close_th}{numeric, [0,1] percentage of proximity between two genes.
 Two genes are considered close when \code{(v2 - v1)/v1 < close_thresh}.}
@@ -18,7 +18,7 @@ Two genes are considered close when \code{(v2 - v1)/v1 < close_thresh}.}
 numeric matrix where expression values are replaced with ranks.
 }
 \description{
-Minimise batch effect by representig normalized expression values with suitable ranks
+Minimise batch effect by representing normalized expression values with suitable ranks
 }
 \details{
 Minimising batch effect relies on an assumption that relative ordering of genes with

@@ -8,7 +8,7 @@ read_data(data.path, format = "10X", header = TRUE, sep = ",",
   quote = "\\"")
 }
 \arguments{
-\item{data.path}{When format="10X", specify direcory location contining 10X files: \cr
+\item{data.path}{When format="10X", specify directory location containing 10X files: \cr
 \enumerate{
 \item matrix.mtx, sparse matrix format file
 \item genes.tsv, gene names tab-separated file
@@ -28,5 +28,5 @@ list containing the 3 input files.
 Read 10X or csv data,
 }
 \details{
-Loads expression data from 10X format directory or csv file as specified. The rows in the matrix are considerd genes; the columns represent samples
+Loads expression data from 10X format directory or csv file as specified. The rows in the matrix are considered genes; the columns represent samples
 }

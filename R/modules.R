@@ -1,4 +1,4 @@
-#' Intitial 1/3rd sampling if very big dataset
+#' Initial 1/3rd sampling if very big dataset
 #' @param data_list list containing \code{read10x()} like structure
 #' @param rare_data optional, return object obtained from the \code{get_rare_genes()} module.
 #' @return two column integer matrix, first column represents sample id, second column contain cluster membership id
@@ -173,14 +173,14 @@ optimized_param<-function(partition, nsamples = 500){
 # ---------------------------------------------
 #' Sampling Primary Clusters
 #' @description Performs sampling from the primary clusters in an inverse exponential order of cluster size.
-#' @details Sampling in inverse proportion of cluster size following a exponential decay equation. To ensure selection of sufficient representative transcriptomes from small clusters, an exponential decay function  is used to determine the proportion of transciptomes to be sampled from each cluster. For $i^{th}$ cluster, the proportion of expression profiles $p_i$ was obtained as follows.\cr
+#' @details Sampling in inverse proportion of cluster size following a exponential decay equation. To ensure selection of sufficient representative transcriptomes from small clusters, an exponential decay function  is used to determine the proportion of transcriptomes to be sampled from each cluster. For $i^{th}$ cluster, the proportion of expression profiles $p_i$ was obtained as follows.\cr
 #' \ifelse{html}{\out{p<sub>i</sub> = p<sub>l</sub> <font face="symbol">-</font> e<sup><font face="symbol">-</font>(S<sub>i</sub>)/(K)</sup>}}{\deqn{Lp_{i} = p_{l} - e^{-\frac{S_i}{K}} (p_{l} - p_{u})}{ASCII}}
 #' where \eqn{S_i} is the size of cluster \eqn{i}, \eqn{K} is a scaling factor, \eqn{p_i} is the proportion of cells to be sampled from the $i^{th}$ Louvain cluster. $p_l$ and $p_u$ are lower and upper bounds of the proportion value respectively.
 #' @references {
 #' \insertRef{sengupta2013reformulated}{dropClust}
 #' }
 #' @param data numeric matrix with \code{n} samples in rows
-#' @param optm_parameters logical, when TRUE the parameters (\code{pinit, pfin, K}) are optimized such that exactly \code{nsamples} are returned. Optimization is performed using simulated anneling
+#' @param optm_parameters logical, when TRUE the parameters (\code{pinit, pfin, K}) are optimized such that exactly \code{nsamples} are returned. Optimization is performed using simulated annealing
 #' @param nsamples integer, total number of samples to return post sampling; ignored when \code{optm_parameters = FALSE}.
 #' @param pinit numeric [0,0.5], minimum probability of that sampling occurs from a cluster, ignored when \code{optm_parameters = TRUE}.
 #' @param pfin numeric [0.5,1], maximum probability of that sampling occurs from a cluster, ignored when \code{optm_parameters = TRUE}.
@@ -345,8 +345,8 @@ compute_2d_embedding<-function(data, sp.samples, clust.list){
 # ---------------------------------------------
 #' Read data
 #' @description Read 10X or csv data,
-#' @details Loads expression data from 10X format directory or csv file as specified. The rows in the matrix are considerd genes; the columns represent samples
-#' @param data.path When format="10X", specify direcory location contining 10X files: \cr
+#' @details Loads expression data from 10X format directory or csv file as specified. The rows in the matrix are considered genes; the columns represent samples
+#' @param data.path When format="10X", specify directory location containing 10X files: \cr
 #' \enumerate{
 #' \item matrix.mtx, sparse matrix format file
 #' \item genes.tsv, gene names tab-separated file
@@ -356,6 +356,7 @@ compute_2d_embedding<-function(data, sp.samples, clust.list){
 #' @param header TRUE/FALSE. Accept the header row to contain gene names within the csv matrix, defaults to TRUE. When FALSE, columns are labelled automatically.
 #' @param sep mention the character separator, defaults to ','.
 #' @return list containing the 3 input files.
+#' @importFrom utils read.csv
 #' @export
 read_data<-function(data.path, format="10X", header=TRUE, sep=',', quote="\""){
 
@@ -373,7 +374,7 @@ read_data<-function(data.path, format="10X", header=TRUE, sep=',', quote="\""){
 }
 
 
-
+#' @importFrom tibble has_rownames
 input_csv<-function(x,  header, sep, quote){
 
 

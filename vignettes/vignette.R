@@ -11,13 +11,14 @@ library(dropClust)
 # specify paths and load functions
 # -------------------------------------
 WORK_DIR = "E:/Projects/dropClust/"
-DATA_DIR <- file.path(WORK_DIR,"data")
-FIG_DIR <-  file.path(WORK_DIR,"plots")
-REPORT_DIR  <- file.path(WORK_DIR,"report")
+DATA_DIR <- file.path(WORK_DIR,"data")       
+FIG_DIR <-  file.path(WORK_DIR,"plots")         
+REPORT_DIR  <- file.path(WORK_DIR,"report")    
 
 dir.create(file.path(FIG_DIR),showWarnings = FALSE)
 dir.create(file.path(REPORT_DIR),showWarnings = FALSE)
 
+set.seed(0)
 
 ## ------------------------------------------------------------------------
 # Load Data
@@ -49,7 +50,7 @@ lnorm<-normalize(filtered.data, min.count=2, min.cell=3)
 dp_genes <- dispersion_genes(lnorm, ngenes_keep = 1000)
 
 
-# Log Normalize Matrix with genes-subset,
+# Log Normalize Matrix with genes-subset, 
 # perform batch effect removal operation when input contains batches
 whole <- matrix.transform(lnorm,dp_genes ,rare_data, batch_correction = FALSE)
 
@@ -120,7 +121,7 @@ DE_genes_nodes_all  <- DE_genes(de_data = de.mat, selected_clusters = GRP, lfc_t
 
 DE_genes_nodes_all$genes
 
-write.csv(DE_genes_nodes_all$genes,
+write.csv(DE_genes_nodes_all$genes, 
           file = file.path(REPORT_DIR, "ct_genes.csv"),
           quote = FALSE)
 
@@ -137,7 +138,7 @@ p<-plot_markers(de_data = de.mat, marker_genes)
 #############################
 p<-plot_heatmap(de_data = de.mat, DE_res = DE_genes_nodes_all$DE_res,nDE = 10)
 
-p
+print(p)
 
 
 

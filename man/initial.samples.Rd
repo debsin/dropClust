@@ -2,7 +2,7 @@
 % Please edit documentation in R/modules.R
 \name{initial.samples}
 \alias{initial.samples}
-\title{Intitial 1/3rd sampling if very big dataset}
+\title{Initial 1/3rd sampling if very big dataset}
 \usage{
 initial.samples(data_list, rare_data = NULL)
 }
@@ -15,5 +15,5 @@ initial.samples(data_list, rare_data = NULL)
 two column integer matrix, first column represents sample id, second column contain cluster membership id
 }
 \description{
-Intitial 1/3rd sampling if very big dataset
+Initial 1/3rd sampling if very big dataset
 }

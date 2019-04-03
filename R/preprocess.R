@@ -2,10 +2,10 @@
 # Batch-Effect Removal
 # --------------------------------------------------
 #' Batch-Effect Removal
-#' @description Minimise batch effect by representig normalized expression values with suitable ranks
+#' @description Minimise batch effect by representing normalized expression values with suitable ranks
 #' @details Minimising batch effect relies on an assumption that relative ordering of genes with
 #' regards to their expressions are preserved across batches.
-#' @param amatrix matrix, each row corresponds to a cell, whose columns depict cluster membership of its neighbours; as ruturned by \code{find_ann()} module.
+#' @param amatrix matrix, each row corresponds to a cell, whose columns depict cluster membership of its neighbours; as returned by \code{find_ann()} module.
 #' @param close_th numeric, [0,1] percentage of proximity between two genes.
 #' Two genes are considered close when \code{(v2 - v1)/v1 < close_thresh}.
 #' @param cells_th numeric, [0,1] percentage of cells which need to be close for one of the genes to be removed.
@@ -66,14 +66,14 @@ get_rank_mat <- function(matrix) {
 
 
 #' Rare Genes and Cells
-#' @description Identifyting potential genes co-expressed in only a minor set of cell pupolations. This helps to boost rare cell discovery.
+#' @description Identifying potential genes co-expressed in only a minor set of cell populations. This helps to boost rare cell discovery.
 #' @details Highly co-expressed genes (between 5-250 genes) are searched for within only a small percentage of cell populations (between 10-200 cells).
 #' The searched is performed recursively until converged.
-#' @param x named list containg 3 objects: \cr
+#' @param x named list containing 3 objects: \cr
 #' \enumerate{
 #' \item \code{mat} sparse numeric matrix with count expression data, with genes in columns. \cr
 #' \item \code{gene_symbols} string vector with unique gene names for each column in \code{mat}. \cr
-#' \item \code{barcodes} string vector of length equal to number of rows in \code{mat} idendifying each transcriptome per row . \cr
+#' \item \code{barcodes} string vector of length equal to number of rows in \code{mat} identifying each transcriptome per row . \cr
 #' }
 #' @return named list containing two character vectors: gene names in \code{rare_genes} and barcodes in \code{rare_cells}.
 #' @import RcppEigen
@@ -115,11 +115,11 @@ get_rare_genes <-function(x) {
 #' Cell Filter
 #' @description Filter poor quality cells.
 #' @details Keep only those cells expressing atleast count = \code{min_count} in the number of genes specified within the quantile range between \code{ql_th} and \code{qh_th}.
-#' @param data named list containg 3 objects: \cr
+#' @param data named list containing 3 objects: \cr
 #' \enumerate{
 #' \item \code{mat} sparse numeric matrix with count expression data, with genes in columns. \cr
 #' \item \code{gene_symbols} string vector with unique gene names for each column in \code{mat}. \cr
-#' \item \code{barcodes} string vector of length equal to number of rows in \code{mat} idendifying each transcriptome per row. \cr
+#' \item \code{barcodes} string vector of length equal to number of rows in \code{mat} identifying each transcriptome per row. \cr
 #' }
 #' @param min_count integer threshold for expression count
 #' @param ql_th quantile at probability with values in [0,1] for lower limit
@@ -159,7 +159,7 @@ filter_cells<-function(data, min_count=3, ql_th = 0.001, qh_th = 1){
 #' @description Matrix normalization by UMI count, also remove poorly expressed genes.
 #' @details Normalizes count value using: \code{total count/median} of respective cells.
 #' Genes with count greater than \code{min.count} and not expressed in atleast \code{min.cell} cells are removed.
-#' @param x named list containg 3 objects: \cr
+#' @param x named list containing 3 objects: \cr
 #' \enumerate{
 #' \item \code{mat} sparse numeric matrix with count expression data, with genes in columns. \cr
 #' \item \code{gene_symbols} string vector with unique gene names for each column in \code{mat}. \cr
@@ -195,7 +195,7 @@ normalize<-function(x, min.count=2, min.cell=3) {
 #' Top Dispersed Genes
 #' @description Get variable genes from normalized UMI counts using Fano Factor metric.
 #' @details Compute Fano Factor metric for each gene. The metric computes the median absolute deviation of dispersion across multiple bins for each gene.
-#' @param normalized_data object reurned by \code{normalize()} module.
+#' @param normalized_data object returned by \code{normalize()} module.
 #' @param ngenes_keep integer to return top ranking \code{ngenes_keep} number of genes.
 #' @return vector of gene names of length \code{ngenes_keep} .
 #' @export

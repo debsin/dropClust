@@ -7,7 +7,7 @@
 dispersion_genes(normalized_data, ngenes_keep = 1000)
 }
 \arguments{
-\item{normalized_data}{object reurned by \code{normalize()} module.}
+\item{normalized_data}{object returned by \code{normalize()} module.}
 
 \item{ngenes_keep}{integer to return top ranking \code{ngenes_keep} number of genes.}
 }

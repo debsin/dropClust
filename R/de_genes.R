@@ -28,7 +28,7 @@ find.cluster.samples<-function(labels,sample_length=100){
 #' @return integer vector of row  identifiers
 #' @export
 reduce_mat_de<-function(log.norm.mat, clust.list, sample_length){
-  # Filter unassigned transciptomes.
+  # Filter unassigned transcriptomes.
   select_sample_ids = which(is.na(clust.list$cluster.ident)==FALSE)
 
   # Normalize by umi counts (median)
@@ -54,9 +54,9 @@ reduce_mat_de<-function(log.norm.mat, clust.list, sample_length){
 # --------------------------------------------------
 #' Find DE genes
 #' @description Find cluster specific differentially expressed genes
-#' @details Performs significance tests in one-vs-all mnner to determine cluster specific genes: two-sample Wilcoxon ('Mann-Whitney') test followed by 'fdr' adjustment and log-fold-change.
+#' @details Performs significance tests in one-vs-all manner to determine cluster specific genes: two-sample Wilcoxon ('Mann-Whitney') test followed by 'fdr' adjustment and log-fold-change.
 #' @param de_data list containing (1) matrix subset, each row corresponds to a transcriptome sample, columns represent genes; (2) predicted labels of the samples in matrix
-#' @param selected_clusters vector of selected cluster identifer to be considered. When unspecified (=NA), defaults to all predicted clusters.
+#' @param selected_clusters vector of selected cluster identifier to be considered. When unspecified (=NA), defaults to all predicted clusters.
 #' @param lfc_th numeric, [0,1] log2 fold change threshold value to define significance.
 #' @param q_th numeric, [0,1] fdr adjusted p-value to define significance.
 #' @param nDE integer, specifies the number of DE genes to return per cluster.

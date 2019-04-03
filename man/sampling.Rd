@@ -10,7 +10,7 @@ sampling(data, optm_parameters = FALSE, nsamples = 500,
 \arguments{
 \item{data}{numeric matrix with \code{n} samples in rows}
 
-\item{optm_parameters}{logical, when TRUE the parameters (\code{pinit, pfin, K}) are optimized such that exactly \code{nsamples} are returned. Optimization is performed using simulated anneling}
+\item{optm_parameters}{logical, when TRUE the parameters (\code{pinit, pfin, K}) are optimized such that exactly \code{nsamples} are returned. Optimization is performed using simulated annealing}
 
 \item{nsamples}{integer, total number of samples to return post sampling; ignored when \code{optm_parameters = FALSE}.}
 
@@ -27,7 +27,7 @@ numeric vector containing the indices of sampled cells.
 Performs sampling from the primary clusters in an inverse exponential order of cluster size.
 }
 \details{
-Sampling in inverse proportion of cluster size following a exponential decay equation. To ensure selection of sufficient representative transcriptomes from small clusters, an exponential decay function  is used to determine the proportion of transciptomes to be sampled from each cluster. For $i^{th}$ cluster, the proportion of expression profiles $p_i$ was obtained as follows.\cr
+Sampling in inverse proportion of cluster size following a exponential decay equation. To ensure selection of sufficient representative transcriptomes from small clusters, an exponential decay function  is used to determine the proportion of transcriptomes to be sampled from each cluster. For $i^{th}$ cluster, the proportion of expression profiles $p_i$ was obtained as follows.\cr
 \ifelse{html}{\out{p<sub>i</sub> = p<sub>l</sub> <font face="symbol">-</font> e<sup><font face="symbol">-</font>(S<sub>i</sub>)/(K)</sup>}}{\deqn{Lp_{i} = p_{l} - e^{-\frac{S_i}{K}} (p_{l} - p_{u})}{ASCII}}
 where \eqn{S_i} is the size of cluster \eqn{i}, \eqn{K} is a scaling factor, \eqn{p_i} is the proportion of cells to be sampled from the $i^{th}$ Louvain cluster. $p_l$ and $p_u$ are lower and upper bounds of the proportion value respectively.
 }

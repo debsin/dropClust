@@ -9,7 +9,7 @@ DE_genes(de_data, selected_clusters = NA, lfc_th, q_th, nDE = 30)
 \arguments{
 \item{de_data}{list containing (1) matrix subset, each row corresponds to a transcriptome sample, columns represent genes; (2) predicted labels of the samples in matrix}
 
-\item{selected_clusters}{vector of selected cluster identifer to be considered. When unspecified (=NA), defaults to all predicted clusters.}
+\item{selected_clusters}{vector of selected cluster identifier to be considered. When unspecified (=NA), defaults to all predicted clusters.}
 
 \item{lfc_th}{numeric, [0,1] log2 fold change threshold value to define significance.}
 
@@ -27,5 +27,5 @@ list containing:\cr
 Find cluster specific differentially expressed genes
 }
 \details{
-Performs significance tests in one-vs-all mnner to determine cluster specific genes: two-sample Wilcoxon ('Mann-Whitney') test followed by 'fdr' adjustment and log-fold-change.
+Performs significance tests in one-vs-all manner to determine cluster specific genes: two-sample Wilcoxon ('Mann-Whitney') test followed by 'fdr' adjustment and log-fold-change.
 }

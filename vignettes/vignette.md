@@ -19,6 +19,8 @@ REPORT_DIR  <- file.path(WORK_DIR,"report")
 
 dir.create(file.path(FIG_DIR),showWarnings = FALSE)
 dir.create(file.path(REPORT_DIR),showWarnings = FALSE)
+
+set.seed(0)
 ```
 
 Loading data
@@ -139,7 +141,7 @@ clust.list<-cluster.cells(data = whole[,top_pc_genes], sp.samples = subsamples_l
 #> Build Graph...
 #> Find ANN...
 #> Assign Cluster Ids...
-#> Unassigned Cells 238 
+#> Unassigned Cells 260 
 #> Number of Predicted Clusters: 7
 ```
 
@@ -239,68 +241,68 @@ DE_genes_nodes_all  <- DE_genes(de_data = de.mat, selected_clusters = GRP, lfc_t
 #> Completed successfully.
 
 DE_genes_nodes_all$genes
-#>       cluster_1   cluster_2  cluster_3 cluster_4   cluster_5      
-#>  [1,] "ITGA2B"    "IL7R"     "LGALS2"  "CD79A"     "RP11-290F20.3"
-#>  [2,] "GP9"       "CD3D"     "S100A8"  "MS4A1"     "MS4A7"        
-#>  [3,] "SPARC"     "LDHB"     "S100A9"  "CD79B"     "LST1"         
-#>  [4,] "TUBB1"     "CD3E"     "MS4A6A"  "TCL1A"     "IFITM3"       
-#>  [5,] "GNG11"     "RPS25"    "LYZ"     "HLA-DQB1"  "CDKN1C"       
-#>  [6,] "TMEM40"    "CD74"     "CD14"    "LINC00926" "AIF1"         
-#>  [7,] "PTCRA"     "HLA-DRA"  "FCN1"    "HLA-DQA1"  "HES4"         
-#>  [8,] "SDPR"      "LTB"      "GPX1"    "CD74"      "SERPINA1"     
-#>  [9,] "PF4"       "HLA-DPA1" "CST3"    "VPREB3"    "LILRA3"       
-#> [10,] "CLU"       "LEF1"     "TYROBP"  "HLA-DRA"   "COTL1"        
-#> [11,] "CMTM5"     "CYBA"     "GSTP1"   "HLA-DRB1"  "FCER1G"       
-#> [12,] "CD9"       "HLA-DRB1" "TYMP"    "HLA-DPB1"  "IFI30"        
-#> [13,] "TREML1"    "TYROBP"   "MALAT1"  "S100A4"    "CFD"          
-#> [14,] "MYL9"      "HLA-DPB1" "ALDH2"   "FCER2"     "HCK"          
-#> [15,] "ACRBP"     "FCER1G"   "FOLR3"   "RPL18A"    "HMOX1"        
-#> [16,] "CA2"       "AQP3"     "S100A6"  "TMSB4X"    "LRRC25"       
-#> [17,] "PPBP"      "IL32"     "LGALS1"  "LTB"       "PILRA"        
-#> [18,] "HIST1H2AC" "RPS29"    "BLVRB"   "SRGN"      "CEBPB"        
-#> [19,] "NRGN"      "CD40LG"   "LGALS3"  "HLA-DPA1"  "FTH1"         
-#> [20,] "RGS18"     "FLT3LG"   "GRN"     "RPS23"     "FCGR3A"       
-#> [21,] "CLDN5"     "TRAT1"    "CSF3R"   "S100A6"    "PSAP"         
-#> [22,] "NGFRAP1"   "MAL"      "FTL"     "BLK"       "LILRA5"       
-#> [23,] "TSC22D1"   "HLA-DRB5" "AP1S2"   "CD37"      "LILRB2"       
-#> [24,] "PGRMC1"    "CCR7"     "NUP214"  "HLA-DRB5"  "CD68"         
-#> [25,] "TPM1"      "CD27"     "ASGR1"   "CD72"      "SIGLEC10"     
-#> [26,] "GRAP2"     "NOSIP"    "B2M"     "HVCN1"     "SPI1"         
-#> [27,] "RUFY1"     "TCF7"     "AIF1"    "KIAA0125"  "CKB"          
-#> [28,] "TPM4"      "ARPC3"    "PTPRCAP" "BANK1"     "S100A11"      
-#> [29,] "PLA2G12A"  "SRGN"     "FTH1"    "LGALS1"    "STXBP2"       
-#> [30,] "MPP1"      "OAZ1"     "CEBPD"   "RPS5"      "CTSS"         
-#>       cluster_6 cluster_7 
-#>  [1,] "GNLY"    "GZMH"    
-#>  [2,] "GZMB"    "CD8A"    
-#>  [3,] "PRF1"    "CD3D"    
-#>  [4,] "SPON2"   "CCL5"    
-#>  [5,] "GZMA"    "CD8B"    
-#>  [6,] "CTSW"    "CST7"    
-#>  [7,] "FGFBP2"  "IL32"    
-#>  [8,] "NKG7"    "NKG7"    
-#>  [9,] "CST7"    "TIGIT"   
-#> [10,] "CD247"   "KLRG1"   
-#> [11,] "CLIC3"   "GZMA"    
-#> [12,] "XCL2"    "LYAR"    
-#> [13,] "GZMM"    "CD3G"    
-#> [14,] "KLRD1"   "FGFBP2"  
-#> [15,] "CD7"     "LCK"     
-#> [16,] "CCL4"    "PTPRCAP" 
-#> [17,] "AKR1C3"  "CTSW"    
-#> [18,] "HOPX"    "TYROBP"  
-#> [19,] "B2M"     "CD2"     
-#> [20,] "APMAP"   "FCER1G"  
-#> [21,] "HLA-A"   "GZMM"    
-#> [22,] "HLA-C"   "FCRL6"   
-#> [23,] "TTC38"   "FTL"     
-#> [24,] "IGFBP7"  "CD99"    
-#> [25,] "MATK"    "RARRES3" 
-#> [26,] "XCL1"    "FTH1"    
-#> [27,] "PLAC8"   "HLA-DRA" 
-#> [28,] "HLA-B"   "CD3E"    
-#> [29,] "FCGR3A"  "LST1"    
-#> [30,] "RARRES3" "C1orf162"
+#>       cluster_1   cluster_2   cluster_3 cluster_4   cluster_5      
+#>  [1,] "ITGA2B"    "CD3D"      "LGALS2"  "CD79A"     "MS4A7"        
+#>  [2,] "GP9"       "IL7R"      "S100A8"  "MS4A1"     "LST1"         
+#>  [3,] "SPARC"     "LDHB"      "S100A9"  "LINC00926" "HES4"         
+#>  [4,] "TMEM40"    "IL32"      "LYZ"     "HLA-DQA1"  "RP11-290F20.3"
+#>  [5,] "TUBB1"     "CD3E"      "CD14"    "TCL1A"     "IFITM3"       
+#>  [6,] "GNG11"     "RPS25"     "FCN1"    "HLA-DQB1"  "AIF1"         
+#>  [7,] "CLU"       "LTB"       "MS4A6A"  "CD74"      "CDKN1C"       
+#>  [8,] "CD9"       "AQP3"      "CST3"    "VPREB3"    "FCER1G"       
+#>  [9,] "SDPR"      "CD2"       "GRN"     "CD79B"     "SERPINA1"     
+#> [10,] "TREML1"    "TRAT1"     "GPX1"    "HLA-DRA"   "FCGR3A"       
+#> [11,] "PTCRA"     "RPS29"     "CSF3R"   "HLA-DPB1"  "COTL1"        
+#> [12,] "PF4"       "JUNB"      "GSTP1"   "CD37"      "CFD"          
+#> [13,] "PPBP"      "CD27"      "TYROBP"  "FCER2"     "SPI1"         
+#> [14,] "CMTM5"     "FLT3LG"    "ALDH2"   "HLA-DRB1"  "CD68"         
+#> [15,] "MYL9"      "CCR7"      "FOLR3"   "FCRLA"     "LRRC25"       
+#> [16,] "NRGN"      "NPM1"      "AP1S2"   "BANK1"     "STXBP2"       
+#> [17,] "RGS18"     "MAL"       "S100A6"  "HLA-DQA2"  "CKB"          
+#> [18,] "ACRBP"     "RGCC"      "BST1"    "RPS23"     "PILRA"        
+#> [19,] "NGFRAP1"   "GIMAP5"    "ASGR1"   "HLA-DPA1"  "CTSL"         
+#> [20,] "HIST1H2AC" "NOSIP"     "LGALS1"  "CD72"      "FTH1"         
+#> [21,] "CA2"       "CD3G"      "FTL"     "RPS5"      "SAT1"         
+#> [22,] "CLDN5"     "TMEM66"    "TYMP"    "LTB"       "TIMP1"        
+#> [23,] "TPM1"      "PRKCQ-AS1" "LGALS3"  "P2RX5"     "LILRA3"       
+#> [24,] "PGRMC1"    "LCK"       "BLVRB"   "HLA-DMB"   "PSAP"         
+#> [25,] "GRAP2"     "PIK3IP1"   "GABARAP" "HLA-DRB5"  "CEBPB"        
+#> [26,] "RUFY1"     "AES"       "FPR1"    "HLA-DMA"   "LILRB2"       
+#> [27,] "TPM4"      "ZFP36L2"   "FCGRT"   "HVCN1"     "IFITM2"       
+#> [28,] "TSC22D1"   "TMEM123"   "CEBPD"   "HLA-DOB"   "CTSS"         
+#> [29,] "MPP1"      "JUN"       "CFP"     "KIAA0125"  "S100A11"      
+#> [30,] "PLA2G12A"  "CD40LG"    "S100A12" "BLNK"      "CSF1R"        
+#>       cluster_6 cluster_7
+#>  [1,] "GZMB"    "GZMH"   
+#>  [2,] "GNLY"    "CD3D"   
+#>  [3,] "PRF1"    "CCL5"   
+#>  [4,] "SPON2"   "CD8B"   
+#>  [5,] "FGFBP2"  "CD8A"   
+#>  [6,] "GZMA"    "CST7"   
+#>  [7,] "CST7"    "CD3G"   
+#>  [8,] "CTSW"    "IL32"   
+#>  [9,] "NKG7"    "GZMA"   
+#> [10,] "HOPX"    "NKG7"   
+#> [11,] "CD247"   "TIGIT"  
+#> [12,] "CCL4"    "FCRL6"  
+#> [13,] "KLRD1"   "FGFBP2" 
+#> [14,] "CLIC3"   "CCL4"   
+#> [15,] "CD7"     "GZMM"   
+#> [16,] "XCL2"    "LCK"    
+#> [17,] "GZMM"    "PTPRCAP"
+#> [18,] "AKR1C3"  "CTSW"   
+#> [19,] "APMAP"   "KLRG1"  
+#> [20,] "B2M"     "PTPN7"  
+#> [21,] "HLA-C"   "MYL12B" 
+#> [22,] "IGFBP7"  "CHST12" 
+#> [23,] "HLA-A"   ""       
+#> [24,] "TTC38"   ""       
+#> [25,] "PLAC8"   ""       
+#> [26,] "RARRES3" ""       
+#> [27,] "XCL1"    ""       
+#> [28,] "GZMH"    ""       
+#> [29,] "UBB"     ""       
+#> [30,] "HLA-B"   ""
 
 write.csv(DE_genes_nodes_all$genes, 
           file = file.path(REPORT_DIR, "ct_genes.csv"),

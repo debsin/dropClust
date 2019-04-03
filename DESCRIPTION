@@ -28,6 +28,7 @@ Imports: dynamicTreeCut,
          reshape2,
          Rtsne,
          stats,
+         tibble,
          utils
 Suggests: knitr
 LinkingTo: Rcpp, RcppEigen

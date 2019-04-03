@@ -5,9 +5,9 @@
 #' Clustering of samples
 #' @description Performs clustering on sampled cells and Post-hoc Cluster Assignment.
 #' @details Clustering is carried out in two alternate approaches on the sampled cells.
-#' For the default settign or quick identification of the existing broad clusters,
+#' For the default setting or quick identification of the existing broad clusters,
 #' a louvain based partition is employed. Otherwise for fine-tuned clustering with outliers,
-#' hierarchical clustering is used with \code{cutreeDynamic} for dendogram cut. Also, Assigns cluster membership to unsampled cells by using cluster membership information of the nearest neighbours.
+#' hierarchical clustering is used with \code{cutreeDynamic} for dendrogram cut. Also, Assigns cluster membership to unsampled cells by using cluster membership information of the nearest neighbours.
 #' An approximate nearest neighbour graph is constructed out of the samples population using the \code{find_ann()} module.
 #' Some cells are left un assigned when its neighbour's cluster membership doesn't form a majority as specified by the \code{conf} parameter.
 #' Unassigned cells (\code{NA}) are excluded in the plot or further downstream analysis.
@@ -18,13 +18,13 @@
 #' @param default logical, when \code{TRUE}, louvain based partition is used and other clustering parameters are ignored.
 #' When \code{FALSE}, hierarchical clustering is used.
 #' @param minClusterSize integer, specifies the size of the smallest cluster; ignored when \code{default = TRUE}.
-#' @param deepSplit integer, level of dendogram split [0-4], higer value produces finer clusters; ignored when \code{default = TRUE}.
+#' @param deepSplit integer, level of dendrogram split [0-4], higher value produces finer clusters; ignored when \code{default = TRUE}.
 #' @param conf numeric [0-1], defines the expected confidence of majority for a consensus. Cells remain unassigned when majority is below \code{conf}.
 #' @param k_nn integers, specifies number of nearest neighbours, defaults to 10.
 #' @return List of:\cr
 #' \enumerate{
 #' \item \code{cluster.ident} vector cluster identifiers ranging from 1 to the number of clusters for respective data points.\cr
-#' \item \code{nn.ids}  matrix, each row corresponds to a cell, wose columns depict cluster membership of its neighbours; as ruturned by the \code{find_ann()} module. \cr
+#' \item \code{nn.ids}  matrix, each row corresponds to a cell, whose columns depict cluster membership of its neighbours; as returned by the \code{find_ann()} module. \cr
 #' }
 #' Unassigned samples are represented by\code{NA} values.
 #' @export

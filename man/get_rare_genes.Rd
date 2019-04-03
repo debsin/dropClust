@@ -7,18 +7,18 @@
 get_rare_genes(x)
 }
 \arguments{
-\item{x}{named list containg 3 objects: \cr
+\item{x}{named list containing 3 objects: \cr
 \enumerate{
 \item \code{mat} sparse numeric matrix with count expression data, with genes in columns. \cr
 \item \code{gene_symbols} string vector with unique gene names for each column in \code{mat}. \cr
-\item \code{barcodes} string vector of length equal to number of rows in \code{mat} idendifying each transcriptome per row . \cr
+\item \code{barcodes} string vector of length equal to number of rows in \code{mat} identifying each transcriptome per row . \cr
 }}
 }
 \value{
 named list containing two character vectors: gene names in \code{rare_genes} and barcodes in \code{rare_cells}.
 }
 \description{
-Identifyting potential genes co-expressed in only a minor set of cell pupolations. This helps to boost rare cell discovery.
+Identifying potential genes co-expressed in only a minor set of cell populations. This helps to boost rare cell discovery.
 }
 \details{
 Highly co-expressed genes (between 5-250 genes) are searched for within only a small percentage of cell populations (between 10-200 cells).
