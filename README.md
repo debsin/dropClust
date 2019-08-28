@@ -28,7 +28,7 @@ The developer version of the R package can be installed with the following R com
 
 ``` r
 library(devtools)
-install_github("debsin/dropClust", dependencies = T)
+install_github("debsin/dropClust", dependencies = T,  ref="devel")
 ```
 
 Vignette tutorial
