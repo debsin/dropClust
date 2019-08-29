@@ -135,19 +135,20 @@ getColors<-function(n){
 # --------------------------------------------------
 #' Plotting cells
 #' @description Scatter plot of cells in two dimensions
-#' @param data data frame containing 3 columns:\cr
-#' \enumerate{
-#'     \item \code{Y1}: numeric values of each point in x-axis.
-#'     \item \code{Y2}: numeric values of each point in y-axis.
-#'     \item \code{color}: factor, cluster identifiers for each point.
-#' }
+#' @param object A SingleCellExperiment object after performing clustering and plot embedding.
 #' @param filename (optional) specify file path to save plot in pdf format.
 #' @param title character, specify plot title.
 #' @return grob object
 #' @export
+#' @importFrom SingleCellExperiment reducedDim reducedDims reducedDim<-
 #' @importFrom ggplot2 ggplot geom_point aes scale_colour_manual theme_classic theme ggtitle annotate guides guide_legend ylab xlab aes_string
 #' @importFrom methods is
-ScatterPlot<-function(data,filename=NA, title){
+ScatterPlot<-function(object,filename=NA, title){
+
+  embedding = tail(names(reducedDims(object)),1)
+
+  data = data.frame("Y1" = reducedDim(object,embedding)[,1], Y2 = reducedDim(object, embedding)[,2], color = object$ClusterIDs)
+
 
   temp = stats::complete.cases(data)
   plot_proj_df = data[temp, ]

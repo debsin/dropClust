@@ -16,7 +16,7 @@
 #' \code{reducedDim()} containter to store the reduced dimension components
 #' with the name from the argument \code{embedding}.
 #' @importFrom methods is
-#' @importFrom SingleCellExperiment colData reducedDim<- normcounts
+#' @importFrom SingleCellExperiment colData reducedDim reducedDim<- normcounts
 #' @export
 #' @examples
 #' library(SingleCellExperiment)

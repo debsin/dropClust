@@ -4,15 +4,10 @@
 \alias{ScatterPlot}
 \title{Plotting cells}
 \usage{
-ScatterPlot(data, filename = NA, title)
+ScatterPlot(object, filename = NA, title)
 }
 \arguments{
-\item{data}{data frame containing 3 columns:\cr
-\enumerate{
-    \item \code{Y1}: numeric values of each point in x-axis.
-    \item \code{Y2}: numeric values of each point in y-axis.
-    \item \code{color}: factor, cluster identifiers for each point.
-}}
+\item{object}{A SingleCellExperiment object after performing clustering and plot embedding.}
 
 \item{filename}{(optional) specify file path to save plot in pdf format.}
 

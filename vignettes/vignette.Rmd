@@ -12,7 +12,7 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  eval=FALSE,
+  eval=TRUE,
   comment = "#>"
 )
 ```
@@ -22,7 +22,7 @@ This latest version of dropClust has been re-implemented to include new features
 
 ## Setting up
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(dropClust)
 set.seed(0)
 ```
@@ -49,7 +49,6 @@ Cells are filtered based on the total UMI count in a cell specified by parameter
 # Filter poor quality cells.  A threshold th corresponds to the total count of a cell.
 sce<-FilterCells(sce)
 sce<-FilterGenes(sce)
-
 ```
 
 ### Data normalization 
@@ -57,7 +56,6 @@ Count normalization is then performed with the good quality genes only. Normaliz
 
 ```{r}
 sce<-CountNormalize(sce)
-
 ```
 
 ### Selecting highly variable genes 
@@ -65,7 +63,6 @@ Further gene selection is carried out by ranking the genes based on its dispersi
 
 ```{r}
 sce<-RankGenes(sce, ngenes_keep = 1000)
-
 ```
 
 
@@ -73,19 +70,15 @@ sce<-RankGenes(sce, ngenes_keep = 1000)
 Primary clustering is performed in a fast manner to estimate a gross structure of the data. Each of these clusters is then sampled to fine tune the clustering process.
 
 ```{r}
-
 sce<-Sampling(sce)
-
 ```
 
 ### Gene selection based on PCA
 Another gene selection is performed to reduce the number of dimensions. PCA is used to identify genes affecting major components.  
 
 ```{r}
-
 # Find PCA top 200 genes. This may take some time.
 sce<-RankPCAGenes(sce)
-
 ```
 
 ## Perform clustering
@@ -95,10 +88,7 @@ By default best-fit, Louvain based clusters are returned. However, the user can 
 
 
 ```{r}
-
-sce<-Cluster(sce, method = "default", conf = 0.8)
-
-
+sce<-Cluster(sce, method = "default", conf = 0.5)
 ```
 
 
@@ -108,13 +98,7 @@ Compute 2D embeddings for samples followed by post-hoc clustering.
 
 ```{r}
 sce<-PlotEmbedding(sce, embedding = "umap", spread = 10, min_dist = 0.1)
-
-plot_data = data.frame("Y1" = reducedDim(sce,"umap")[,1], Y2 = reducedDim(sce, "umap")[,2], color = sce$ClusterIDs)
-
-ScatterPlot(plot_data,title = "Clusters")
-
-
-
+ScatterPlot(sce,title = "Clusters")
 ```
 
 ## Find cluster specific Differentially Expressed genes

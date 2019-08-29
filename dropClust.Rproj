@@ -19,4 +19,4 @@ BuildType: Package
 PackageInstallArgs: --no-multiarch --with-keep.source
 PackageBuildBinaryArgs: --no-multiarch
 PackageCheckArgs: --as-cran --no-vignettes
-PackageRoxygenize: rd,collate,namespace
+PackageRoxygenize: rd,collate,namespace,vignette
