@@ -53,11 +53,11 @@ Cluster<-function(object,
                   use.previous = FALSE, ...){
 
   invisible(gc())
+  if(any(names(reducedDims(object))=="CComponents"))
+    use.reduced.dims = "CComponents"
 
   # If using integrated embeddings for clustering
   if(!is.null(use.reduced.dims)){
-    if(any(object@metadata[["dropClust"]]=="Correction"))
-      use.reduced.dims = "CComponents"
     mat = reducedDim(object, use.reduced.dims)
 
     cat("Clustering on embedded dimensions...")

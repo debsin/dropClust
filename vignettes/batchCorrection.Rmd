@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ```
 
 ## Integrative analysis
-```{r}
+```{r,warning=FALSE,message=FALSE}
 
 library(dropClust)
 load(url("https://raw.githubusercontent.com/LuyiTian/CellBench_data/master/data/sincell_with_class.RData"))
@@ -49,17 +49,29 @@ batch.id = merged_data$Batch
 ## Perform correction and dimension reduction
 
 ```{r}
-
-dc.corr <- Correction(merged_data, close_th = 0.1, cells_th = 0.1,
-                       components = 10, n_neighbors = 30, init = "spca")
+set.seed(0)
+dc.corr <-  Correction(merged_data,  method="default", close_th = 0.1, cells_th = 0.1,
+                       components = 10, n_neighbors = 20, init = "spca", min_dist = 0.5)
 ```
 
 ## Perform Clustering on integrated dimensions
 
 ```{r}
-cc = Cluster(dc.corr,method = "kmeans",centers = 3)
+dc.corr = Cluster(dc.corr,method = "default",centers = 3)
 ```
+## Visualizing clusters
 
+Compute 2D embeddings for samples followed by post-hoc clustering.
+
+```{r}
+ScatterPlot(dc.corr,title = "Clusters")
+
+PROJ_c_dc = reducedDim(dc.corr, "CComponents")
+plot_proj_df_true_dc<-data.frame(Y1 = PROJ_c_dc[,1],Y2 = PROJ_c_dc[,2],
+                                 color = as.factor(dc.corr$cell_line),
+                                 batch = as.integer(dc.corr$Batch))
+batch_plot(plot_proj_df_true_dc,filename = NA, title = "Corrected DC ",  type=NULL)
+```
 
 ## Marker discovery from the merged dataset
 ```{r}

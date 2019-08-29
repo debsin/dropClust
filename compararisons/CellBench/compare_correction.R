@@ -3,7 +3,7 @@ library(SingleCellExperiment)
 library("magrittr")
 ## CellBench dataset
 
-load("C:/Projects/CellBench/CellBench_data-master/data/sincell_with_class.RData")
+load("C:/Projects/data/Cellbench/sincell_with_class.RData")
 load("~/GitHub/dropclust_benchmarks/analysis/bc/Cellbench/out_gene_ids.Rda")
 
 source("compararisons/Cellbench/plots.R")
@@ -37,7 +37,7 @@ merged_data<-Merge(all.objects)
 corrected_data <- Correction(merged_data, close_th = 0.1, cells_th = 0.1,
                        components = 10, n_neighbors = 20, init = "spca", min_dist = 0.5)
 
-PROJ_c_dc = reducedDim(corrected_data, "iComponents")
+PROJ_c_dc = reducedDim(corrected_data, "CComponents")
 plot_proj_df_true_dc<-data.frame(Y1 = PROJ_c_dc[,1],Y2 = PROJ_c_dc[,2],
                                  color = as.factor(corrected_data$cell_line),
                                  batch = as.integer(corrected_data$Batch))

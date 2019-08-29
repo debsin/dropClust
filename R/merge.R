@@ -98,7 +98,7 @@ Merge<-function(objects, use.de.genes = TRUE){
   SummarizedExperiment::colData(mix.data)$Batch = batch
 
   if(use.de.genes){
-    common_genes_de = intersect(unique(as.vector(unlist(all_de_genes))), unique(unlist(merge_genes)))
+    common_genes_de = intersect(unique(as.vector(unlist(all_de_genes))), unique(unlist(common_genes)))
     SummarizedExperiment::rowData(mix.data)$CommonDEGenes = rep(FALSE, nrow(mix.data))
     SummarizedExperiment::rowData(mix.data)$CommonDEGenes[which(rownames(mix.data) %in% common_genes_de)]<- TRUE
   }
