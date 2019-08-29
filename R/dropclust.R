@@ -11,6 +11,7 @@
 #'
 #' @useDynLib dropClust, .registration=TRUE
 #'
+#' @import SingleCellExperiment
 #' @importFrom Rcpp sourceCpp
 #' @importFrom Rdpack reprompt
 

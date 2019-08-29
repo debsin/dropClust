@@ -1,23 +1,10 @@
----
-title: "Batch Correction"
-author: "Debajyoti Sinha"
-output: github_document
-vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Batch Correction}
-  %\usepackage[utf8]{inputenc}
----
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  eval=FALSE,
-  comment = "#>"
-)
-```
+Batch Correction
+================
+Debajyoti Sinha
 
 ## Integrative analysis
-```{r}
+
+``` r
 
 library(dropClust)
 load(url("https://raw.githubusercontent.com/LuyiTian/CellBench_data/master/data/sincell_with_class.RData"))
@@ -30,13 +17,14 @@ objects[[1]] = sce_sc_10x_qc
 objects[[2]] = sce_sc_CELseq2_qc
 
 objects[[3]] = sce_sc_Dropseq_qc
-
 ```
 
 ## Merge datasets using dropClust
-Datasets can be merged in two ways: using a set of DE genes from each batch or, using the common set of genes from the raw count data
 
-```{r}
+Datasets can be merged in two ways: using a set of DE genes from each
+batch or, using the common set of genes from the raw count data
+
+``` r
 
 all.objects = objects
 merged_data<-Merge(all.objects)
@@ -45,10 +33,9 @@ annotations = merged_data$cell_line
 batch.id = merged_data$Batch
 ```
 
-
 ## Perform correction and dimension reduction
 
-```{r}
+``` r
 
 dc.corr <- Correction(merged_data, close_th = 0.1, cells_th = 0.1,
                        components = 10, n_neighbors = 30, init = "spca")
@@ -56,12 +43,12 @@ dc.corr <- Correction(merged_data, close_th = 0.1, cells_th = 0.1,
 
 ## Perform Clustering on integrated dimensions
 
-```{r}
+``` r
 cc = Cluster(dc.corr,method = "kmeans",centers = 3)
 ```
 
-
 ## Marker discovery from the merged dataset
-```{r}
+
+``` r
 de<-FindMarkers(cc,q_th = 0.001, lfc_th = 1.2)
 ```

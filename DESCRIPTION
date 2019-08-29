@@ -1,4 +1,4 @@
-rmPackage: dropClust
+Package: dropClust
 Type: Package
 Title: Single Cell Transcriptome Analysis
 Version: 2.1.0

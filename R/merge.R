@@ -8,7 +8,7 @@
 #' @return  A SingleCellExperiment object with an additional column named \code{Batch} in \code{colData} column.
 #' The column stores the origin of the batch for each cell. The different batches are labeled in the order
 #' as appearing in the input list.
-#' @importFrom SingleCellExperiment rowData colData
+#' @importFrom SingleCellExperiment rowData colData rowData<- colData<-
 #' @export
 #' @examples
 #' library(SingleCellExperiment)
@@ -32,13 +32,21 @@ Merge<-function(objects, use.de.genes = TRUE){
   all_de_genes = list()
   merge_genes = list()
 
+  if(is.null(rowData(objects[[1]])$Symbol))
+    rowData(objects[[1]])$Symbol <- rownames(objects[[1]])
+
   common_genes = rowData(objects[[1]])$Symbol
   common_colData = names(colData(objects[[1]]))
 
   for (i in 1:length(objects)){
     cat("\nProcesing Batch",i,"...\n")
-    SummarizedExperiment::rowData(objects[[i]])$ID = rownames(objects[[i]])
+
+    if(is.null(rowData(objects[[i]])$Symbol))
+      rowData(objects[[i]])$Symbol <- rownames(objects[[i]])
+    rowData(objects[[i]])$ID <- rownames(objects[[i]])
     rownames(objects[[i]]) = rowData(objects[[i]])$Symbol
+
+
     common_genes = intersect(common_genes, rownames(objects[[i]]))
     temp = objects[[i]]
 
