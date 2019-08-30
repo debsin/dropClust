@@ -137,7 +137,7 @@ getColors<-function(n){
 #' @description Scatter plot of cells in two dimensions
 #' @param object A SingleCellExperiment object after performing clustering and plot embedding.
 #' @param labels A vector of length equal to the number of cells matching the object assay columns.
-#' the label could be cluster identities or other annotations correcponding to each cell in the same order as appearing in the assay column-wiseS.
+#' The label could be cluster identities or other annotations correcponding to each cell in the same order as appearing in the assay column-wiseS.
 #' @param filename (optional) specify file path to save plot in pdf format.
 #' @param title character, specify plot title.
 #' @return grob object
