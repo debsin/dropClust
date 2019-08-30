@@ -33,16 +33,16 @@ batch.
     #> Sort Top Genes...
     #> Cutoff Genes...
     #> Building graph with 901 nodes...Louvain Partition...Done.
-    #> 700 samples extracted.
-    #> Find best PCA components...[1]  700 1000
+    #> 702 samples extracted.
+    #> Find best PCA components...[1]  702 1000
     #> 200 genes selected.
-    #> 700 samples and 200 genes used for clustering.
-    #> Build Graph with 700 samples...Done.
+    #> 702 samples and 200 genes used for clustering.
+    #> Build Graph with 702 samples...Done.
     #> Louvain Partitioning...Done.
     #> Find nearest neighbours among sub-samples...Done.
     #> Post-hoc Cluster Assignment...Done.
     #> Unassigned Cells 0 
-    #> Number of Predicted Clusters: 6 
+    #> Number of Predicted Clusters: 7 
     #> Computing for DE genes:
     #> Cluster 1 :
     #>  Computing Wilcoxon p values...Done.
@@ -60,6 +60,9 @@ batch.
     #>  Computing Wilcoxon p values...Done.
     #>  Computing Log fold change values...Done.
     #> Cluster 6 :
+    #>  Computing Wilcoxon p values...Done.
+    #>  Computing Log fold change values...Done.
+    #> Cluster 7 :
     #>  Computing Wilcoxon p values...Done.
     #>  Computing Log fold change values...Done.
     #> 
@@ -127,9 +130,9 @@ batch.
 ``` r
 set.seed(1)
 dc.corr <-  Correction(merged_data,  method="default", close_th = 0.1, cells_th = 0.1,
-                       components = 10, n_neighbors = 20,  min_dist = 0.5)
+                       components = 10, n_neighbors = 30,  min_dist = 1)
 #> Batch correcting...
-#> from 172 to 97 genes.
+#> from 177 to 100 genes.
 #> Embedding with UMAP...Done
 ```
 
@@ -150,7 +153,7 @@ ScatterPlot(dc.corr, title = "Clusters")
 ```
 
 ![Batch corrected dropClust based
-Clustering.](batchCorrection_files/figure-gfm/unnamed-chunk-5-1.png)
+Clustering.](C:/Users/Debajyoti/AppData/Local/Temp/RtmpSwbch8/preview-1ca460ff1c7d.dir/batchCorrection_files/figure-gfm/unnamed-chunk-5-1.png)
 \#\# Optional Batch correction Users can use `fastmnn` method for batch
 correction. Specific arguments of fastmnn can also be passed through the
 `Correction` module.
@@ -186,7 +189,7 @@ mnn.corr = Cluster(mnn.corr,method = "kmeans",centers = 3)
 ScatterPlot(mnn.corr, title = "Clusters")
 ```
 
-![](batchCorrection_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](C:/Users/Debajyoti/AppData/Local/Temp/RtmpSwbch8/preview-1ca460ff1c7d.dir/batchCorrection_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ## Marker discovery from the merged dataset
 
@@ -204,14 +207,14 @@ de<-FindMarkers(dc.corr,q_th = 0.001, lfc_th = 1.2,nDE = 10)
 #>  Computing Log fold change values...Done.
 de$genes.df
 #>       cluster_1         cluster_2         cluster_3        
-#>  [1,] "ENSG00000179344" "ENSG00000221923" "ENSG00000122406"
-#>  [2,] "ENSG00000121858" "ENSG00000106211" "ENSG00000065978"
-#>  [3,] "ENSG00000214548" "ENSG00000100867" "ENSG00000142864"
-#>  [4,] "ENSG00000131203" "ENSG00000242265" "ENSG00000253706"
-#>  [5,] "ENSG00000151632" "ENSG00000196109" "ENSG00000106153"
-#>  [6,] "ENSG00000223865" "ENSG00000129991" "ENSG00000258484"
-#>  [7,] "ENSG00000198502" "ENSG00000105568" "ENSG00000162433"
-#>  [8,] "ENSG00000100234" "ENSG00000178150" "ENSG00000132432"
-#>  [9,] "ENSG00000154277" "ENSG00000130724" "ENSG00000167641"
-#> [10,] "ENSG00000134339" "ENSG00000170906" "ENSG00000256670"
+#>  [1,] "ENSG00000179344" "ENSG00000266891" "ENSG00000249395"
+#>  [2,] "ENSG00000121858" "ENSG00000100979" "ENSG00000253706"
+#>  [3,] "ENSG00000100234" "ENSG00000100867" "ENSG00000135446"
+#>  [4,] "ENSG00000149557" "ENSG00000258949" "ENSG00000132432"
+#>  [5,] "ENSG00000214548" "ENSG00000221923" "ENSG00000258484"
+#>  [6,] "ENSG00000198502" "ENSG00000129991" "ENSG00000135506"
+#>  [7,] "ENSG00000231389" "ENSG00000231290" "ENSG00000147889"
+#>  [8,] "ENSG00000196735" "ENSG00000170291" "ENSG00000147604"
+#>  [9,] "ENSG00000223865" "ENSG00000164744" "ENSG00000154582"
+#> [10,] "ENSG00000151632" "ENSG00000237268" "ENSG00000167641"
 ```
