@@ -34,8 +34,9 @@ merged_data<-Merge(all.objects)
 
 
 # dropClust Corrected
+set.seed(1)
 corrected_data <- Correction(merged_data, close_th = 0.1, cells_th = 0.1,
-                       components = 10, n_neighbors = 20, init = "spca", min_dist = 0.5)
+                       components = 10, n_neighbors = 20,  min_dist = 0.5)
 
 PROJ_c_dc = reducedDim(corrected_data, "CComponents")
 plot_proj_df_true_dc<-data.frame(Y1 = PROJ_c_dc[,1],Y2 = PROJ_c_dc[,2],
@@ -45,6 +46,7 @@ batch_plot(plot_proj_df_true_dc,filename = NA, title = "Corrected DC ",  type=NU
 
 
 # Uncorrected
+merged_data<-Merge(all.objects, use.de.genes = FALSE)
 mixed.UC <- CountNormalize(merged_data)
 mixed.UC <- RankGenes(mixed.UC, ngenes_keep = 1000)
 uncorrected_mat <- t(normcounts(mixed.UC)[rowData(mixed.UC)$HVG,])

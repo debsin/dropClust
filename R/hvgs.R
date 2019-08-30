@@ -116,7 +116,7 @@ RankPCAGenes<-function(object,top=200){
     S = c(S,peaks)
     # cat(i,"\t")
   }
-  graphics::barplot(S)
+  # graphics::barplot(S)
 
   df<-as.data.frame(cbind("MOD" = S,
                           "VAR" = apply(PRR$x[,1:nc],2, stats::var)))

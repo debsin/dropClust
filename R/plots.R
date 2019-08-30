@@ -143,11 +143,21 @@ getColors<-function(n){
 #' @importFrom SingleCellExperiment reducedDim reducedDims reducedDim<-
 #' @importFrom ggplot2 ggplot geom_point aes scale_colour_manual theme_classic theme ggtitle annotate guides guide_legend ylab xlab aes_string
 #' @importFrom methods is
-ScatterPlot<-function(object,filename=NA, title){
+#' @importFrom utils tail
+ScatterPlot<-function(object, labels=NULL, filename=NA, title){
 
   embedding = tail(names(reducedDims(object)),1)
 
   data = data.frame("Y1" = reducedDim(object,embedding)[,1], Y2 = reducedDim(object, embedding)[,2], color = object$ClusterIDs)
+
+
+  if(!is.null(labels)){
+    if(dim(reducedDim(object,embedding))[1]!=length(labels))
+      stop("Length of labels do not match input dimensions.")
+    data = data.frame("Y1" = reducedDim(object,embedding)[,1], Y2 = reducedDim(object, embedding)[,2], color = as.factor(labels))
+
+  }
+
 
 
   temp = stats::complete.cases(data)

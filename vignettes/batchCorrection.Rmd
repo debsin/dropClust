@@ -1,28 +1,28 @@
 ---
-title: "Batch Correction"
-author: "Debajyoti Sinha"
+title: "Integrative analysis"
+author: ""
 output: github_document
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Batch Correction}
+  %\VignetteIndexEntry{Integrative analysis}
   %\usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  eval=FALSE,
+  eval=TRUE,
   comment = "#>"
 )
 ```
 
-## Integrative analysis
+## Loading datasets
+Each dataset represents one batch and must be a `SingleCellExperiment` object. The objects are are merged by passing a list in the next step.
 ```{r,warning=FALSE,message=FALSE}
 
 library(dropClust)
 load(url("https://raw.githubusercontent.com/LuyiTian/CellBench_data/master/data/sincell_with_class.RData"))
 
-set.seed(0)
 objects = list()
 
 objects[[1]] = sce_sc_10x_qc
@@ -34,46 +34,53 @@ objects[[3]] = sce_sc_Dropseq_qc
 ```
 
 ## Merge datasets using dropClust
-Datasets can be merged in two ways: using a set of DE genes from each batch or, using the common set of genes from the raw count data
+Datasets can be merged in two ways: using a set of DE genes from each batch or, using the union of the sets of highly variable genes from each batch.
 
-```{r}
+```{r, echo=FALSE}
 
 all.objects = objects
 merged_data<-Merge(all.objects)
 
-annotations = merged_data$cell_line
-batch.id = merged_data$Batch
 ```
 
 
 ## Perform correction and dimension reduction
 
 ```{r}
-set.seed(0)
+set.seed(1)
 dc.corr <-  Correction(merged_data,  method="default", close_th = 0.1, cells_th = 0.1,
-                       components = 10, n_neighbors = 20, init = "spca", min_dist = 0.5)
+                       components = 10, n_neighbors = 20,  min_dist = 0.5)
 ```
 
 ## Perform Clustering on integrated dimensions
 
 ```{r}
-dc.corr = Cluster(dc.corr,method = "default",centers = 3)
+dc.corr = Cluster(dc.corr,method = "kmeans",centers = 3)
 ```
 ## Visualizing clusters
 
 Compute 2D embeddings for samples followed by post-hoc clustering.
 
-```{r}
-ScatterPlot(dc.corr,title = "Clusters")
+```{r, fig.asp=1, fig.cap="Batch corrected dropClust based Clustering."}
+ScatterPlot(dc.corr, title = "Clusters")
 
-PROJ_c_dc = reducedDim(dc.corr, "CComponents")
-plot_proj_df_true_dc<-data.frame(Y1 = PROJ_c_dc[,1],Y2 = PROJ_c_dc[,2],
-                                 color = as.factor(dc.corr$cell_line),
-                                 batch = as.integer(dc.corr$Batch))
-batch_plot(plot_proj_df_true_dc,filename = NA, title = "Corrected DC ",  type=NULL)
+```
+## Optional Batch correction
+Users can use `fastmnn` method for batch correction. Specific arguments of fastmnn can also be passed through the `Correction` module.
+```{r, message=FALSE, warning=FALSE}
+merged_data.fastmnn<-Merge(all.objects,use.de.genes = FALSE)
+
+set.seed(1)
+mnn.corr <-  Correction(merged_data.fastmnn,  method="fastmnn", d = 10)
+
+mnn.corr = Cluster(mnn.corr,method = "kmeans",centers = 3)
+
+ScatterPlot(mnn.corr, title = "Clusters")
+
 ```
 
 ## Marker discovery from the merged dataset
 ```{r}
-de<-FindMarkers(cc,q_th = 0.001, lfc_th = 1.2)
+de<-FindMarkers(dc.corr,q_th = 0.001, lfc_th = 1.2,nDE = 10)
+de$genes.df
 ```

@@ -4,7 +4,7 @@
 \alias{ScatterPlot}
 \title{Plotting cells}
 \usage{
-ScatterPlot(object, filename = NA, title)
+ScatterPlot(object, labels = NULL, filename = NA, title)
 }
 \arguments{
 \item{object}{A SingleCellExperiment object after performing clustering and plot embedding.}

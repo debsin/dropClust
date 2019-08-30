@@ -46,9 +46,10 @@ Correction<-function(object, method="default", close_th=0.1, cells_th=0.1, compo
   temp<- CountNormalize(object)
 
   if(method=="fastmnn"){
-    temp =  Log2Normalize(normcounts(temp))
-    temp  = batchelor::fastMNN(temp,batch = batchids,  k=20, ...)
-    reducedDim(temp, "CComponents") = reducedDim(temp)
+    mat =  Log2Normalize(normcounts(temp))
+    mnn.obj  = batchelor::fastMNN(mat,batch = batchids,  k=20, pc.input = FALSE,...)
+    reducedDim(temp,"CComponents") = reducedDim(mnn.obj,"corrected")
+    SummarizedExperiment::assay(temp, "reconstructed")<-SummarizedExperiment::assay(mnn.obj, "reconstructed")
   }  else{
     mat = Log2Normalize(normcounts(temp)[rowData(temp)$CommonDEGenes,])
     corrected = as.matrix(.batcheffect.dc(t(mat), close_th = close_th, cells_th = cells_th))
