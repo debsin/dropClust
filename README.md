@@ -223,7 +223,7 @@ batch.
 ``` r
 set.seed(1)
 dc.corr <-  Correction(merged_data,  method="default", close_th = 0.1, cells_th = 0.1,
-                       components = 10, n_neighbors = 20,  min_dist = 0.5)
+                       components = 10, n_neighbors = 30,  min_dist = 1)
 ```
 
 ## Perform Clustering on integrated dimensions
