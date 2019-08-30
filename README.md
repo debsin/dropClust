@@ -27,6 +27,7 @@ dropClust Online
        -  [Differential gene analysis](#find-cluster-specific-differentially-expressed-genes)
        -  [Plot marker genes](#plot-hand-picked-marker-genes)
        -  [Draw heatmap](#draw-heatmap)
+       -  [Integrative Analysis](#integrative-analysis)
 
 
 
@@ -148,6 +149,8 @@ plot_data = data.frame("Y1" = reducedDim(sce,"umap")[,1], Y2 = reducedDim(sce, "
 ScatterPlot(plot_data,title = "Clusters")
 ```
 
+![](doc/vignette_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
 Find cluster specific Differentially Expressed genes
 ----------------------------------------------------
 
@@ -171,6 +174,8 @@ marker_genes = c("S100A8", "GNLY", "PF4")
 
 p<-PlotMarkers(sce, marker_genes)
 ```
+![](doc/vignette_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
 
 
 Heat map of top DE genes from each cluster
@@ -182,6 +187,7 @@ p<-PlotHeatmap(sce, DE_res = DE_genes_all$DE_res,nDE = 10)
 
 print(p)
 ```
+![](doc/vignette_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 
 Integrative analysis
@@ -238,7 +244,9 @@ ScatterPlot(dc.corr, title = "Clusters")
 ![Batch corrected dropClust based
 Clustering.](doc/batchCorrection_files/figure-gfm/unnamed-chunk-5-1.png)
 
-### Optional Batch correction Users can use `fastmnn` method for batchcorrection. Specific arguments of fastmnn can also be passed through the `Correction` module.
+## Optional Batch correction
+
+Users can use `fastmnn` method for batchcorrection. Specific arguments of fastmnn can also be passed through the `Correction` module.
 
 ``` r
 merged_data.fastmnn<-Merge(all.objects,use.de.genes = FALSE)
