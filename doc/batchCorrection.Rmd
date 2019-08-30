@@ -1,0 +1,87 @@
+---
+title: "Integrative analysis"
+author: ""
+output: github_document
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Integrative analysis}
+  %\usepackage[utf8]{inputenc}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  eval=TRUE,
+  comment = "#>"
+)
+```
+
+## Loading datasets
+Each dataset represents one batch and must be a `SingleCellExperiment` object. The objects are are merged by passing a list in the next step.
+```{r,warning=FALSE,message=FALSE}
+
+library(dropClust)
+load(url("https://raw.githubusercontent.com/LuyiTian/CellBench_data/master/data/sincell_with_class.RData"))
+
+objects = list()
+
+objects[[1]] = sce_sc_10x_qc
+
+objects[[2]] = sce_sc_CELseq2_qc
+
+objects[[3]] = sce_sc_Dropseq_qc
+
+```
+
+## Merge datasets using dropClust
+Datasets can be merged in two ways: using a set of DE genes from each batch or, using the union of the sets of highly variable genes from each batch.
+
+```{r, echo=FALSE}
+
+all.objects = objects
+merged_data<-Merge(all.objects)
+
+```
+
+
+## Perform correction and dimension reduction
+
+```{r}
+set.seed(1)
+dc.corr <-  Correction(merged_data,  method="default", close_th = 0.1, cells_th = 0.1,
+                       components = 10, n_neighbors = 30,  min_dist = 1)
+```
+
+## Perform Clustering on integrated dimensions
+
+```{r}
+dc.corr = Cluster(dc.corr,method = "kmeans",centers = 3)
+```
+## Visualizing clusters
+
+Compute 2D embeddings for samples followed by post-hoc clustering.
+
+```{r, fig.width=4, fig.height=4,  fig.cap="Batch corrected dropClust based Clustering."}
+ScatterPlot(dc.corr, title = "Clusters")
+
+```
+## Optional Batch correction
+
+Users can use `fastmnn` method for batch correction. Specific arguments of fastmnn can also be passed through the `Correction` module.
+```{r, message=FALSE, warning=FALSE, fig.width=4, fig.height=4,  }
+merged_data.fastmnn<-Merge(all.objects,use.de.genes = FALSE)
+
+set.seed(1)
+mnn.corr <-  Correction(merged_data.fastmnn,  method="fastmnn", d = 10)
+
+mnn.corr = Cluster(mnn.corr,method = "kmeans",centers = 3)
+
+ScatterPlot(mnn.corr, title = "Clusters")
+
+```
+
+## Marker discovery from the merged dataset
+```{r}
+de<-FindMarkers(dc.corr,q_th = 0.001, lfc_th = 1.2,nDE = 10)
+de$genes.df
+```
