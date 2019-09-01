@@ -9,6 +9,9 @@ ScatterPlot(object, labels = NULL, filename = NA, title)
 \arguments{
 \item{object}{A SingleCellExperiment object after performing clustering and plot embedding.}
 
+\item{labels}{A vector of length equal to the number of cells matching the object assay columns.
+The label could be cluster identities or other annotations correcponding to each cell in the same order as appearing in the assay column-wiseS.}
+
 \item{filename}{(optional) specify file path to save plot in pdf format.}
 
 \item{title}{character, specify plot title.}

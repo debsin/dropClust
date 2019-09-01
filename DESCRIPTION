@@ -8,7 +8,6 @@ Description: A toolkit for resource efficient analysis of large scale single cel
 Depends: R (>= 3.6),
          ggplot2
 Imports: batchelor,
-         DropletUtils,
          dynamicTreeCut,
          flexclust,
          GenSA,
