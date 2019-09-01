@@ -51,7 +51,10 @@ Correction<-function(object, method="default", close_th=0.1, cells_th=0.1, compo
     reducedDim(temp,"CComponents") = reducedDim(mnn.obj,"corrected")
     SummarizedExperiment::assay(temp, "reconstructed")<-SummarizedExperiment::assay(mnn.obj, "reconstructed")
   }  else{
-    mat = Log2Normalize(normcounts(temp)[rowData(temp)$CommonDEGenes,])
+    if(!is.null(rowData(temp)$CommonDEGenes))
+      mat = Log2Normalize(normcounts(temp)[rowData(temp)$CommonDEGenes,])
+    else
+      mat = Log2Normalize(normcounts(temp))
     corrected = as.matrix(.batcheffect.dc(t(mat), close_th = close_th, cells_th = cells_th))
     cat("Embedding with UMAP...")
     umap_proj_dc = uwot::umap(corrected, metric = 'cosine', n_components = components, ...)
