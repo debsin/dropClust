@@ -114,25 +114,28 @@ FindMarkers <- function(object, selected_clusters=NA, lfc_th, q_th, nDE=30)
     cat("\tComputing Log fold change values...")
     LFC = log2(Matrix::rowMeans(raw_data[,IND_a])/
                  Matrix::rowMeans(raw_data[,IND_b]))
+    names(LFC) <- rownames(raw_data)
 
 
     cat("Done.\n")
 
 
     sig = DE_res[intersect(which(LFC > 0),
-                           intersect(which(abs(LFC) >= lfc_th), which(DE_res$qvalues <= q_th))), ]
+                           intersect(which(abs(LFC) >= lfc_th), which(DE_res$qvalues <= q_th))), ,drop=F]
 
     # sig = DE_res[intersect(which(abs(LFC)>=lfc_th),
     #                        which(DE_res$qvalues<=q_th)),]
 
+    if(!any(is.na(sig))){
+      rN = rownames(sig)[order(sig$qvalues)]
 
-    rN = rownames(sig)[order(sig$qvalues)]
+      DE_list[[paste0(i)]] =
+        data.frame(gene = rN,
+                   qvalues = DE_res$qvalues[match(rN,rownames(DE_res))],
+                   fc = LFC[match(rN,names(LFC))])
+    } else
+      DE_list[[paste0(i)]] = NULL
 
-
-    DE_list[[paste0(i)]] =
-      data.frame(gene = rN,
-                 qvalues = DE_res$qvalues[match(rN,rownames(DE_res))],
-                 fc = LFC[match(rN,rownames(LFC))])
   }
 
   # names(DE_list) = unique(labels)
@@ -168,9 +171,13 @@ FindMarkers <- function(object, selected_clusters=NA, lfc_th, q_th, nDE=30)
 .top.de.genes<-function(l,nDE=30){
   DE_up=list()
   for(type in names(l)){
-    ordered = order(l[[type]]$qvalues,abs(l[[type]]$fc))
-    row = as.character(utils::head(l[[type]]$gene[ordered],nDE))
-    DE_up[[type]]= row
+    if(!is.null(type)){
+      ordered = order(l[[type]]$qvalues,abs(l[[type]]$fc))
+      row = as.character(utils::head(l[[type]]$gene[ordered],nDE))
+      DE_up[[type]]= row
+    } else{
+      DE_up[[type]]= ""
+    }
   }
 
   # all_ct_genes = unique(unlist(DE_up))
