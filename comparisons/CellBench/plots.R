@@ -85,10 +85,11 @@ batch_plot<-function(data,filename=NA, title, type=NULL){
   n_points = dim(plot_proj_df[stats::complete.cases(plot_proj_df),])[1]
 
 
-  p_size = 1.5
+  p_size = 1
   p<-ggplot()
   p2<-p+ geom_point(data = plot_proj_df,aes_string(x ='Y1',y = 'Y2', color = 'color',shape='batch'),size=p_size)  +
     scale_color_manual(values = getColors(  colorcount_t ))+
+    scale_shape_manual(values = c(0,1,4))+
     theme_classic()+
     theme(legend.position="none")+
     ggtitle(title)+

@@ -50,7 +50,8 @@ merged_data.uc<-Merge(all.objects, use.de.genes = FALSE)
 mixed.UC <- CountNormalize(merged_data.uc)
 mixed.UC <- RankGenes(mixed.UC, ngenes_keep = 1000)
 uncorrected_mat <- t(normcounts(mixed.UC)[rowData(mixed.UC)$HVG,])
-PROJ_uc = uwot::umap(as.matrix(uncorrected_mat),n_neighbors =20 )
+set.seed(1)
+PROJ_uc = uwot::umap(as.matrix(uncorrected_mat),n_neighbors =20,min_dist = 0.5 )
 plot_proj_df_true_uc<-data.frame(Y1 = PROJ_uc[,1],Y2 = PROJ_uc[,2],color = as.factor(mixed.UC$cell_line), batch = as.factor(mixed.UC$Batch))
 batch_plot(plot_proj_df_true_uc,filename = NA, title = "Uncorrected",  type=NULL)
 
@@ -100,13 +101,29 @@ for(type in interested_types){
 }
 
 library(gridExtra)
-pdf("compararisons/CellBench/all_types_complete.pdf",width = 12, height = 11)
-do.call("grid.arrange", c(p, ncol = 5))
-dev.off()
+# pdf("compararisons/CellBench/all_types_complete.pdf",width = 12, height = 11)
+# do.call("grid.arrange", c(p, ncol = 5))
+# dev.off()
 
+
+interested_types = c("All")
+
+p<-list()
+for(type in interested_types){
+  if(type=="All") type = NULL
+  p[[paste(type,"UC",collapse=" ")]]<- batch_plot(plot_proj_df_true_uc,filename = NA, title = "Uncorrected",  type=type)
+  p[[paste(type,"DC")]]<- batch_plot(plot_proj_df_true_dc,filename = NA, title = "dropClust",  type=type)
+  p[[paste(type,"Seurat")]]<- batch_plot(plot_proj_df_true_surat,filename = NA, title = "Seurat",  type=type)
+  p[[paste(type,"Scanorama")]]<- batch_plot(plot_proj_df_true_scanorama,filename = NA, title = "Sconorama",  type=type)
+  p[[paste(type,"Mnn")]]<- batch_plot(plot_proj_df_true_mnn,filename = NA, title = "mnncorrect",  type=type)
+
+}
 hlay <- rbind(c(1,1,2,2,3,3),
               c(NA,4,4,5,5,NA))
 
+pdf("GitHub/dropClust/comparisons/CellBench/all_types_complete_mixed.pdf",width = 14, height = 8)
+gridExtra::grid.arrange(grobs = p, layout_matrix = hlay)
+dev.off()
 
 ###
 # Alternate Corrections
