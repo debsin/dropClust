@@ -6,7 +6,7 @@ library("magrittr")
 load("C:/Projects/data/Cellbench/sincell_with_class.RData")
 load("~/GitHub/dropclust_benchmarks/analysis/bc/Cellbench/out_gene_ids.Rda")
 
-source("compararisons/Cellbench/plots.R")
+source("~/GitHub/dropClust/comparisons/CellBench/plots.R")
 
 
 set.seed(0)
@@ -36,7 +36,7 @@ merged_data<-Merge(all.objects)
 # dropClust Corrected
 set.seed(1)
 corrected_data <- Correction(merged_data, close_th = 0.1, cells_th = 0.1,
-                       components = 10, n_neighbors = 20,  min_dist = 0.5)
+                       components = 10, n_neighbors = 20,  min_dist = 1)
 
 PROJ_c_dc = reducedDim(corrected_data, "CComponents")
 plot_proj_df_true_dc<-data.frame(Y1 = PROJ_c_dc[,1],Y2 = PROJ_c_dc[,2],
@@ -46,8 +46,8 @@ batch_plot(plot_proj_df_true_dc,filename = NA, title = "Corrected DC ",  type=NU
 
 
 # Uncorrected
-merged_data<-Merge(all.objects, use.de.genes = FALSE)
-mixed.UC <- CountNormalize(merged_data)
+merged_data.uc<-Merge(all.objects, use.de.genes = FALSE)
+mixed.UC <- CountNormalize(merged_data.uc)
 mixed.UC <- RankGenes(mixed.UC, ngenes_keep = 1000)
 uncorrected_mat <- t(normcounts(mixed.UC)[rowData(mixed.UC)$HVG,])
 PROJ_uc = uwot::umap(as.matrix(uncorrected_mat),n_neighbors =20 )
@@ -57,14 +57,14 @@ batch_plot(plot_proj_df_true_uc,filename = NA, title = "Uncorrected",  type=NULL
 
 
 # MnnCorrect
-source("compararisons/CellBench/mnnCorrect.R")
+source("~/GitHub/dropClust/comparisons/CellBench/mnnCorrect.R")
 dim(mnn_corr)
 PROJ_mnn = uwot::umap(mnn_corr, n_neighbors = 20 )
 plot_proj_df_true_mnn<-data.frame(Y1 = PROJ_mnn[,1],Y2 = PROJ_mnn[,2],color = as.factor(annotations), batch = as.factor(batch.id))
 batch_plot(plot_proj_df_true_mnn,filename = NA, title = "Corrected Mnn ",  type=NULL)
 
 # Seurat
-source("compararisons/CellBench/Seurat.R")
+source("~/GitHub/dropClust/comparisons/CellBench/Seurat.R")
 
 dim(seurat_corr)
 
@@ -75,7 +75,7 @@ batch_plot(plot_proj_df_true_surat,filename = NA, title = "Corrected Seurat",  t
 
 
 # Scanorama
-source("compararisons/CellBench/scanorama.R")
+source("~/GitHub/dropClust/comparisons/CellBench/scanorama.R")
 dim(scrama_corr)
 umap_proj_scanorama = uwot::umap(scrama_corr,n_neighbors = 20 )
 PJ_scanorama<-umap_proj_scanorama
@@ -103,6 +103,9 @@ library(gridExtra)
 pdf("compararisons/CellBench/all_types_complete.pdf",width = 12, height = 11)
 do.call("grid.arrange", c(p, ncol = 5))
 dev.off()
+
+hlay <- rbind(c(1,1,2,2,3,3),
+              c(NA,4,4,5,5,NA))
 
 
 ###
