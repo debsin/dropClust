@@ -30,6 +30,8 @@ annotations = c(objects[[1]]$cell_line, objects[[2]]$cell_line, objects[[3]]$cel
 batch.id = c(rep(1, ncol(objects[[1]])), rep(2, ncol(objects[[2]])), rep(3, ncol(objects[[3]])))
 
 all.objects = objects
+
+library(dropClust)
 merged_data<-Merge(all.objects)
 
 
@@ -54,6 +56,7 @@ set.seed(1)
 PROJ_uc = uwot::umap(as.matrix(uncorrected_mat),n_neighbors =20,min_dist = 0.5 )
 plot_proj_df_true_uc<-data.frame(Y1 = PROJ_uc[,1],Y2 = PROJ_uc[,2],color = as.factor(mixed.UC$cell_line), batch = as.factor(mixed.UC$Batch))
 batch_plot(plot_proj_df_true_uc,filename = NA, title = "Uncorrected",  type=NULL)
+
 
 
 
@@ -115,13 +118,21 @@ for(type in interested_types){
   p[[paste(type,"DC")]]<- batch_plot(plot_proj_df_true_dc,filename = NA, title = "dropClust",  type=type)
   p[[paste(type,"Seurat")]]<- batch_plot(plot_proj_df_true_surat,filename = NA, title = "Seurat",  type=type)
   p[[paste(type,"Scanorama")]]<- batch_plot(plot_proj_df_true_scanorama,filename = NA, title = "Sconorama",  type=type)
-  p[[paste(type,"Mnn")]]<- batch_plot(plot_proj_df_true_mnn,filename = NA, title = "mnncorrect",  type=type)
+  p[[paste(type,"Mnn")]]<- batch_plot(plot_proj_df_true_mnn,filename = NA, title = "MNNCorrect",  type=type)
 
 }
-hlay <- rbind(c(1,1,2,2,3,3),
-              c(NA,4,4,5,5,NA))
 
-pdf("GitHub/dropClust/comparisons/CellBench/all_types_complete_mixed.pdf",width = 14, height = 8)
+p[[paste(type,"legend")]] <- cowplot::get_legend(legend_plot(plot_proj_df_true_uc,filename = NA, title = "Uncorrected",  type=NULL))
+
+hlay <- rbind(c(1,1,2,2,3,3),
+              c(1,1,2,2,3,3),
+              c(1,1,2,2,3,3),
+              c(NA,4,4,5,5,NA),
+              c(NA,4,4,5,5,NA),
+              c(NA,4,4,5,5,NA),
+              c(6,6,6,6,6,6))
+
+pdf("~/GitHub/dropClust/comparisons/CellBench/all_types_complete_cb_mixed.pdf",width = 12, height = 8)
 gridExtra::grid.arrange(grobs = p, layout_matrix = hlay)
 dev.off()
 

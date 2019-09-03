@@ -7,9 +7,9 @@
 #' \code{default} mode performs the dropClust based correction followed by UMAP embedding.
 #' The \code{fastmnn} option performs the mutual neighbourhood based correction which is implemented in the \code{batchelor} package.
 #' when \code{FALSE} the batches are merged on the set of common genes across batches.
-#' @return  A SingleCellExperiment object with a new entry under the
+#' @return  A SingleCellExperiment object with two new entry under the
 #' \code{reducedDim()} container to store the reduced dimension components
-#' with the name \code{"CComponents"}.
+#' with the name \code{"CComponents"} and the rank expression matrix named \code{"RankMat"}.
 #' @param close_th for the method = default, specifies the value at which the
 #' expression values of two genes will be considered as close pairs.
 #' @param cells_th for the method default, specifies the value to
@@ -60,6 +60,7 @@ Correction<-function(object, method="default", close_th=0.1, cells_th=0.1, compo
     umap_proj_dc = uwot::umap(corrected, metric = 'cosine', n_components = components, ...)
     cat("Done\n")
 
+    reducedDim(temp, "RankMat")<-corrected
     reducedDim(temp, "CComponents")<-umap_proj_dc
   }
 

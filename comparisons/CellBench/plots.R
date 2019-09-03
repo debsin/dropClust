@@ -85,7 +85,7 @@ batch_plot<-function(data,filename=NA, title, type=NULL){
   n_points = dim(plot_proj_df[stats::complete.cases(plot_proj_df),])[1]
 
 
-  p_size = 1
+  p_size = 1.5
   p<-ggplot()
   p2<-p+ geom_point(data = plot_proj_df,aes_string(x ='Y1',y = 'Y2', color = 'color',shape='batch'),size=p_size)  +
     scale_color_manual(values = getColors(  colorcount_t ))+
@@ -99,7 +99,7 @@ batch_plot<-function(data,filename=NA, title, type=NULL){
     # guides(colour = guide_legend(title="Annotations",
     #                              override.aes = list(size=3,alpha=1),
     #                              nrow=2))+
-    ylab("UMAP 2")+ xlab("UMAP 1")
+    ylab("DIM 2")+ xlab("DIM 1")
   # print(p2)
   p3<-p2
   if(!is.null(type)){
@@ -118,6 +118,83 @@ batch_plot<-function(data,filename=NA, title, type=NULL){
       #          label = levels(plot_proj_df$color),
       #          size =max(p_size*2,3) )+
       guides(colour = guide_legend(title="Batch",
+                                   override.aes = list(size=2,alpha=1),
+                                   nrow=1))+
+      ylab("DIM 2")+ xlab("DIM 1")
+  }
+
+  # print(p3)
+
+  if(!is.na(filename)){
+    grDevices::pdf(filename,width = 6,height = 5)
+    print(p3)
+    grDevices::dev.off()
+    return()
+  }
+  return(p3)
+
+
+}
+
+
+legend_plot<-function(data,filename=NA, title, type=NULL){
+
+  temp = stats::complete.cases(data)
+  plot_proj_df = data[temp, ]
+
+  plot_proj_df$color<-factor(plot_proj_df$color)
+
+  plot_proj_df$batch<-factor(as.numeric(plot_proj_df$batch))
+
+  x.mean = stats::aggregate(plot_proj_df$Y1,
+                            list(plot_proj_df$color),
+                            stats::median)[,-1]
+  y.mean = stats::aggregate(plot_proj_df$Y2,
+                            list(plot_proj_df$color),
+                            stats::median)[,-1]
+
+  colorcount_t = length(levels(plot_proj_df$color))
+
+
+  n_points = dim(plot_proj_df[stats::complete.cases(plot_proj_df),])[1]
+
+
+
+
+  p_size = 1
+  p<-ggplot()
+  p2<-p+ geom_point(data = plot_proj_df,aes_string(x ='Y1',y = 'Y2', color = 'color',shape='batch'),size=p_size)  +
+    scale_color_manual(values = getColors(  colorcount_t ))+
+    scale_shape_manual(values = c(0,1,4))+
+    theme_classic()+
+    theme(legend.position="bottom")+
+    ggtitle(title)+
+    annotate("text", x = x.mean, y = y.mean,
+             label = levels(plot_proj_df$color),
+             size =max(p_size*2,3) )+
+    guides(colour = guide_legend(override.aes = list(size=3,alpha=1),
+                                 nrow=1))+
+    guides(shape = guide_legend(override.aes = list(size=3,alpha=1),
+                                 nrow=1))+
+    labs(color="CellType", shape="Batch")+
+    ylab("UMAP 2")+ xlab("UMAP 1")
+  # print(p2)
+  p3<-p2
+  if(!is.null(type)){
+    specific = plot_proj_df[which(plot_proj_df$color == type),]
+    specific = specific[stats::complete.cases(specific),]
+    p2 <-p+geom_point(data = plot_proj_df,aes_string(x ='Y1',y = 'Y2'),size=p_size, color="gray80", alpha = 0.6,shape=1)
+
+    p3<-p2+geom_point(data = specific, aes_string(x = 'Y1', y = 'Y2', color = 'batch'),
+                      alpha = 0.9, size=p_size, shape=19, stroke = 0.00) +
+      scale_color_manual(values = c("orange","dodgerblue","forestgreen"))+
+      theme_classic()+
+      theme(legend.position="bottom")+
+      ggtitle(paste(title,type))+
+      # annotate("text", x = x.mean, y = y.mean,
+      #          label = levels(plot_proj_df$color),
+      #          size =max(p_size*2,3) )+
+      guides(colour = guide_legend(title="",
                                    override.aes = list(size=2,alpha=1),
                                    nrow=1))+
       ylab("DIM 2")+ xlab("DIM 1")

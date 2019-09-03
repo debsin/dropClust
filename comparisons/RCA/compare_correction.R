@@ -16,7 +16,7 @@ counts = Matrix:: Matrix(as.matrix(rca.data), sparse = T)
 batch = rep(1, length(labels))
 batch[grep('B2',labels)]<-2
 
-source("compararisons/RCA/plots.R")
+source("~/GitHub/dropClust/comparisons/RCA/plots.R")
 
 sce1 <- SingleCellExperiment(assays = list(counts = counts[,which(batch ==1)]))
 rowData(sce1)$Symbol = gene.symbols
@@ -37,10 +37,11 @@ merged_data<-Merge(all.objects)
 
 
 # dropClust Corrected
-corrected_data <- Correction(merged_data, close_th = 0.1, cells_th = 0.1,
-                       components = 10, n_neighbors = 30, init = "spca")
+set.seed(1)
+corrected_data <- Correction(merged_data, close_th = 0.05, cells_th = 0.1, min_dist=0.5,
+                       components = 10, n_neighbors = 20)
 
-PROJ_c_dc = reducedDim(corrected_data, "iComponents")
+PROJ_c_dc = reducedDim(corrected_data, "CComponents")
 plot_proj_df_true_dc<-data.frame(Y1 = PROJ_c_dc[,1],Y2 = PROJ_c_dc[,2],
                                  color = as.factor(corrected_data$cell_line),
                                  batch = as.integer(corrected_data$Batch))
@@ -52,6 +53,7 @@ mixed.UC <- FilterGenes(merged_data)
 mixed.UC <- CountNormalize(mixed.UC)
 mixed.UC <- RankGenes(mixed.UC, ngenes_keep = 1000)
 uncorrected_mat <- t(normcounts(mixed.UC)[rowData(mixed.UC)$HVG,])
+set.seed(1)
 PROJ_uc = uwot::umap(as.matrix(uncorrected_mat),metric = 'cosine',n_neighbors =20)
 plot_proj_df_true_uc<-data.frame(Y1 = PROJ_uc[,1],Y2 = PROJ_uc[,2],color = as.factor(mixed.UC$cell_line), batch = as.factor(mixed.UC$Batch))
 batch_plot(plot_proj_df_true_uc,filename = NA, title = "Uncorrected",  type=NULL)
@@ -59,14 +61,14 @@ batch_plot(plot_proj_df_true_uc,filename = NA, title = "Uncorrected",  type=NULL
 
 
 # MnnCorrect
-source("compararisons/RCA/mnnCorrect.R")
+source("~/GitHub/dropClust/comparisons/RCA/mnnCorrect.R")
 dim(mnn_corr)
 PROJ_mnn = uwot::umap(mnn_corr, n_neighbors = 20 )
 plot_proj_df_true_mnn<-data.frame(Y1 = PROJ_mnn[,1],Y2 = PROJ_mnn[,2],color = as.factor(annotations), batch = as.factor(batch))
 batch_plot(plot_proj_df_true_mnn,filename = NA, title = "Corrected Mnn ",  type=NULL)
 
 # Seurat
-source("compararisons/RCA/Seurat.R")
+source("~/GitHub/dropClust/comparisons/RCA/Seurat.R")
 
 dim(seurat_corr)
 
@@ -77,7 +79,7 @@ batch_plot(plot_proj_df_true_surat,filename = NA, title = "Corrected Seurat",  t
 
 
 # Scanorama
-source("compararisons/RCA/scanorama.R")
+source("~/GitHub/dropClust/comparisons/RCA/scanorama.R")
 dim(scrama_corr)
 umap_proj_scanorama = uwot::umap(scrama_corr,n_neighbors = 20 , metric = 'cosine')
 PJ_scanorama<-umap_proj_scanorama
@@ -85,6 +87,36 @@ plot_proj_df_true_scanorama<-data.frame(Y1 = PJ_scanorama[,1],Y2 = PJ_scanorama[
                                         color = as.factor(annotations), batch = as.factor(batch))
 batch_plot(plot_proj_df_true_scanorama,filename = NA, title = "Corrected Scanorama",  type=NULL)
 
+
+
+
+
+interested_types = c("All")
+
+p<-list()
+for(type in interested_types){
+  if(type=="All") type = NULL
+  p[[paste(type,"UC",collapse=" ")]]<- batch_plot(plot_proj_df_true_uc,filename = NA, title = "Uncorrected",  type=type)
+  p[[paste(type,"DC")]]<- batch_plot(plot_proj_df_true_dc,filename = NA, title = "dropClust",  type=type)
+  p[[paste(type,"Seurat")]]<- batch_plot(plot_proj_df_true_surat,filename = NA, title = "Seurat",  type=type)
+  p[[paste(type,"Scanorama")]]<- batch_plot(plot_proj_df_true_scanorama,filename = NA, title = "Sconorama",  type=type)
+  p[[paste(type,"Mnn")]]<- batch_plot(plot_proj_df_true_mnn,filename = NA, title = "MNNCorrect",  type=type)
+
+}
+
+p[[paste(type,"legend")]] <- cowplot::get_legend(legend_plot(plot_proj_df_true_uc,filename = NA, title = "Uncorrected",  type=NULL))
+
+hlay <- rbind(c(1,1,2,2,3,3),
+              c(1,1,2,2,3,3),
+              c(1,1,2,2,3,3),
+              c(NA,4,4,5,5,NA),
+              c(NA,4,4,5,5,NA),
+              c(NA,4,4,5,5,NA),
+              c(6,6,6,6,6,6))
+
+pdf("~/GitHub/dropClust/comparisons/RCA/all_types_complete_rca_mixed.pdf",width = 12, height = 8)
+gridExtra::grid.arrange(grobs = p, layout_matrix = hlay)
+dev.off()
 
 
 
@@ -98,12 +130,12 @@ for(type in interested_types){
   p[[paste(type,"DC")]]<- batch_plot(plot_proj_df_true_dc,filename = NA, title = "dropClust",  type=type)
   p[[paste(type,"Seurat")]]<- batch_plot(plot_proj_df_true_surat,filename = NA, title = "Seurat",  type=type)
   p[[paste(type,"Scanorama")]]<- batch_plot(plot_proj_df_true_scanorama,filename = NA, title = "Sconorama",  type=type)
-  p[[paste(type,"Mnn")]]<- batch_plot(plot_proj_df_true_mnn,filename = NA, title = "mnncorrect",  type=type)
+  p[[paste(type,"Mnn")]]<- batch_plot(plot_proj_df_true_mnn,filename = NA, title = "MNNCorrect",  type=type)
 
 }
 
 library(gridExtra)
-pdf("compararisons/RCA/all_types_complete.pdf",width = 14, height = 10)
-do.call("grid.arrange", c(p, ncol = 5))
-dev.off()
+# pdf("compararisons/RCA/all_types_complete.pdf",width = 14, height = 10)
+# do.call("grid.arrange", c(p, ncol = 5))
+# dev.off()
 
