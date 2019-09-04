@@ -19,7 +19,7 @@ BuildType: Package
 PackageUseDevtools: Yes
 PackageInstallArgs: --no-multiarch --with-keep.source
 PackageBuildBinaryArgs: --no-multiarch
-PackageCheckArgs: --as-cran --no-build-vignettes
+PackageCheckArgs: --as-cran --no-vignettes
 PackageRoxygenize: rd,collate,namespace
 
 QuitChildProcessesOnExit: Yes

@@ -28,7 +28,7 @@ rowData(sce2)$Symbol = gene.symbols
 colData(sce2)$cell_line = annotations[which(batch ==2)]
 colData(sce2)$Batch = batch[which(batch ==2)]
 
-
+library(dropClust)
 set.seed(0)
 objects  = list(sce1,sce2)
 
@@ -38,8 +38,8 @@ merged_data<-Merge(all.objects)
 
 # dropClust Corrected
 set.seed(1)
-corrected_data <- Correction(merged_data, close_th = 0.05, cells_th = 0.1, min_dist=0.5,
-                       components = 10, n_neighbors = 20)
+corrected_data <- Correction(merged_data, close_th = 0.07, cells_th = 0.1,
+                       components = 10, n_neighbors = 10, min_dist = 0.5)
 
 PROJ_c_dc = reducedDim(corrected_data, "CComponents")
 plot_proj_df_true_dc<-data.frame(Y1 = PROJ_c_dc[,1],Y2 = PROJ_c_dc[,2],

@@ -56,8 +56,13 @@ Correction<-function(object, method="default", close_th=0.1, cells_th=0.1, compo
     else
       mat = Log2Normalize(normcounts(temp))
     corrected = as.matrix(.batcheffect.dc(t(mat), close_th = close_th, cells_th = cells_th))
+
     cat("Embedding with UMAP...")
-    umap_proj_dc = uwot::umap(corrected, metric = 'cosine', n_components = components, ...)
+    if(!is.null(temp$Sampling)){
+      umap_model = uwot::umap(corrected[temp$Sampling,], metric = 'cosine', n_components = components, ret_model=TRUE, ...)
+      umap_proj_dc = uwot::umap_transform(corrected, umap_model)
+    } else
+      umap_proj_dc = uwot::umap(corrected, metric = 'cosine', n_components = components, ...)
     cat("Done\n")
 
     reducedDim(temp, "RankMat")<-corrected

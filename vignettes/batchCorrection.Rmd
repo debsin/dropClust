@@ -55,7 +55,7 @@ dc.corr <-  Correction(merged_data,  method="default", close_th = 0.1, cells_th 
 ## Perform Clustering on integrated dimensions
 
 ```{r}
-dc.corr = Cluster(dc.corr,method = "kmeans",centers = 3)
+dc.corr = Cluster(dc.corr,method = "hclust")
 ```
 ## Visualizing clusters
 

@@ -11,7 +11,8 @@
 #' @param format One of c("10X", "txt"). Defaults to "10X".
 #' @param ...  pass specific arguments to the \code{read.csv()} function when \code{format = "txt"}.
 #' @return SingleCellExperiment object.
-#' @importFrom utils read.csv
+#' @importFrom utils read.csv read.delim
+#' @importFrom methods as
 #' @importFrom SingleCellExperiment SingleCellExperiment rowData colData
 #' @export
 readfiles<-function(paths=NULL, format="10x",...){
@@ -113,7 +114,7 @@ readfiles<-function(paths=NULL, format="10x",...){
   SingleCellExperiment(list(counts = full_data), rowData = gene_info, colData = cell_info)
 }
 
-## reused Seurat code
+## The code for this module is borrowed from Seurat
 read10X<-function(data.dir=NULL,  gene.column = 2, unique.features = TRUE){
   full.data <- list()
   for (i in seq_along(along.with = data.dir)) {
@@ -148,7 +149,7 @@ read10X<-function(data.dir=NULL,  gene.column = 2, unique.features = TRUE){
     if (all(grepl(pattern = "\\-1$", x = cell.names))) {
       cell.names <- as.vector(x = as.character(x = sapply(
         X = cell.names,
-        FUN = ExtractField,
+        FUN = extract_field,
         field = 1,
         delim = "-"
       )))

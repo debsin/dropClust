@@ -5,8 +5,8 @@
 \title{Clustering of samples}
 \usage{
 Cluster(object, use.subsamples = TRUE, method = "default",
-  use.reduced.dims = NULL, minClusterSize = 20, deepSplit = 3,
-  k_nn = 10, conf = 0.75, use.previous = FALSE, ...)
+  use.reduced.dims = NULL, k_nn = 10, conf = 0.75,
+  use.previous = FALSE, ...)
 }
 \arguments{
 \item{object}{A SingleCellExperiment object containing normalized expression values in \code{"normcounts"}.}
@@ -17,11 +17,7 @@ Cluster(object, use.subsamples = TRUE, method = "default",
 In the default mode, louvain based partition is used.
 When \code{hclust}, hierarchical clustering is used.}
 
-\item{use.reduced.dims}{optional, when used, the name of the \code{reducedDim()} table to be used for clustering.}
-
-\item{minClusterSize}{integer, specifies the size of the smallest cluster; works when \code{method = "hclust"}.}
-
-\item{deepSplit}{integer, level of dendrogram split [0-4], higher value produces finer clusters; ignored when
+\item{use.reduced.dims}{optional, when used, the name of the \code{reducedDim()} table to be used for clustering.
 \code{method = "hclust"}.}
 
 \item{k_nn}{integers, specifies number of nearest neighbours, defaults to 10.}

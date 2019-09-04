@@ -33,11 +33,6 @@ Merge<-function(objects, use.de.genes = TRUE){
   if(is.null(rownames(objects[[1]])))
     stop("Objects must contain rownames.")
 
-  if(is.null(rowData(objects[[1]])$Symbol))
-    SummarizedExperiment::rowData(objects[[1]])$Symbol <- rownames(objects[[1]])
-
-  common_genes_raw = rownames(objects[[1]])
-  common_colData = names(colData(objects[[1]]))
 
   all_de_genes = list()
   merge_genes = list()
@@ -51,9 +46,6 @@ Merge<-function(objects, use.de.genes = TRUE){
     if(is.null(rowData(objects[[i]])$Symbol))
       SummarizedExperiment::rowData(objects[[i]])$Symbol <- rownames(objects[[i]])
 
-    # rownames(objects[[i]]) = rowData(objects[[i]])$Symbol
-
-    common_genes_raw = intersect(common_genes_raw, rownames(objects[[i]]))
     temp = objects[[i]]
 
     temp<- FilterCells(temp)
@@ -61,12 +53,8 @@ Merge<-function(objects, use.de.genes = TRUE){
     temp<- CountNormalize(temp)
     merge_genes[[i]] = rownames(temp)
 
-
-    common_colData = intersect(common_colData, names(colData(temp)))
-
     temp<- RankGenes(temp,ngenes_keep = 1000)
     merge_genes[[i]] = rownames(temp)[rowData(temp)$HVG]
-
 
     if(use.de.genes){
 
@@ -82,6 +70,17 @@ Merge<-function(objects, use.de.genes = TRUE){
       all_de_genes[[i]] = rownames(temp)[match(batch.gene.symbol, rowData(temp)$Symbol,nomatch=NA)]
       all_de_genes[[i]] = all_de_genes[[i]][!is.na(all_de_genes[[i]])]
     }
+
+
+    if(i==1){
+      common_genes_raw = rownames(temp)
+      common_colData = names(colData(temp))
+    } else {
+      common_genes_raw = intersect(common_genes_raw, rownames(temp))
+      common_colData = intersect(common_colData, names(colData(temp)))
+    }
+
+    objects[[i]] = temp
   }
 
   hvg_genes  = base::Reduce(union, merge_genes)
@@ -90,7 +89,7 @@ Merge<-function(objects, use.de.genes = TRUE){
 
   mix.data.counts  =  counts(objects[[1]])[common_genes, ]
   # mix.data.ncounts = normcounts(objects[[1]])[common_genes, ]
-  col.data = colData(objects[[1]])[,common_colData, drop=F]
+  col.data = SummarizedExperiment::colData(objects[[1]])[,common_colData, drop=F]
   batch = rep(1, ncol(mix.data.counts))
 
   row.data = SummarizedExperiment::rowData(objects[[1]])[common_genes, , drop=F]
@@ -102,7 +101,7 @@ Merge<-function(objects, use.de.genes = TRUE){
     # temp2 <-  normcounts(objects[[i]])[common_genes, ]
     # mix.data.ncounts <- SingleCellExperiment::cbind(mix.data.ncounts, temp2)
 
-    col.data = SingleCellExperiment::rbind(col.data, colData(objects[[i]])[,common_colData, drop=F])
+    col.data = SingleCellExperiment::rbind(col.data, SummarizedExperiment::colData(objects[[i]])[,common_colData, drop=F])
     batch  = c(batch, rep(i, ncol(temp)))
   }
 
@@ -112,11 +111,17 @@ Merge<-function(objects, use.de.genes = TRUE){
 
   SummarizedExperiment::colData(mix.data)$Batch = batch
 
+
+
   if(use.de.genes){
     common_genes_de = intersect(unique(as.vector(unlist(all_de_genes))), unique(unlist(common_genes)))
     SummarizedExperiment::rowData(mix.data)$CommonDEGenes = rep(FALSE, nrow(mix.data))
     SummarizedExperiment::rowData(mix.data)$CommonDEGenes[which(rownames(mix.data) %in% common_genes_de)]<- TRUE
+
+    col.names = names(colData(mix.data))
+    SummarizedExperiment::colData(mix.data) = SummarizedExperiment::colData(mix.data)[,which(!col.names %in% c("ClusterIDs","Sample_ClusterIDs","ANN"))]
   }
+
 
   mix.data@metadata[["dropClust"]] = c(mix.data@metadata[["dropClust"]], "Merge")
 

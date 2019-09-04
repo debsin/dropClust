@@ -13,8 +13,6 @@
 #' In the default mode, louvain based partition is used.
 #' When \code{hclust}, hierarchical clustering is used.
 #' @param use.reduced.dims optional, when used, the name of the \code{reducedDim()} table to be used for clustering.
-#' @param minClusterSize integer, specifies the size of the smallest cluster; works when \code{method = "hclust"}.
-#' @param deepSplit integer, level of dendrogram split [0-4], higher value produces finer clusters; ignored when
 #' \code{method = "hclust"}.
 #' @param k_nn integers, specifies number of nearest neighbours, defaults to 10.
 #' @param conf numeric [0-1], defines the expected confidence of majority for a consensus. Cells remain unassigned when majority is below \code{conf}.
@@ -29,7 +27,7 @@
 #'
 #' Unassigned samples are represented by\code{NA} values.
 #' @importFrom methods is
-#' @importFrom SingleCellExperiment reducedDim  normcounts colData
+#' @importFrom SingleCellExperiment reducedDim reducedDims normcounts colData
 #' @export
 #' @examples
 #' library(SingleCellExperiment)
@@ -46,8 +44,6 @@ Cluster<-function(object,
                   use.subsamples= TRUE,
                   method = "default",
                   use.reduced.dims = NULL,
-                  minClusterSize = 20,
-                  deepSplit = 3,
                   k_nn=10,
                   conf=0.75,
                   use.previous = FALSE, ...){
@@ -63,8 +59,6 @@ Cluster<-function(object,
     cat("Clustering on embedded dimensions...")
     ss_clusters<- .ssClustering(ss_sel_genes = mat,
                                 method = method,
-                                minClusterSize = minClusterSize,
-                                deepSplit = deepSplit,
                                 trees = NULL, ...)
     SummarizedExperiment::colData(object)$ClusterIDs<-as.factor(ss_clusters$labels)
     cat("Done.\n")
@@ -105,8 +99,6 @@ Cluster<-function(object,
     # Clustering on subsamples-------------------------------------------------
     ss_clusters<-.ssClustering(ss_sel_genes = s_mat,
                                method = method,
-                               minClusterSize = minClusterSize,
-                               deepSplit = deepSplit,
                                trees = ann_trees, ...)
     SummarizedExperiment::colData(object)$Sample_ClusterIDs<-NA
     SummarizedExperiment::colData(object)$Sample_ClusterIDs[subsamples_louvain] <- ss_clusters$labels
@@ -164,21 +156,17 @@ Cluster<-function(object,
 
 
 .ssClustering<-function(ss_sel_genes, method,
-                        minClusterSize,
-                        deepSplit,
                         trees, ...){
   switch(method,
          hclust={
-           cat("Perfom Hierarchical Clustering...", minClusterSize, deepSplit, "\n")
+           cat("Perfom Hierarchical Clustering...", "\n")
            d = rdist::rdist(ss_sel_genes, metric = "angular")
            hc<-stats::hclust(d,method = "average")
            hc_labs<-dynamicTreeCut::cutreeDynamic(dendro = hc, cutHeight = NULL,
-                                                  minClusterSize = minClusterSize,
                                                   method = "hybrid",
-                                                  deepSplit = deepSplit,
                                                   pamStage = TRUE,
                                                   distM = as.matrix(d),
-                                                  verbose = 0)
+                                                  verbose = 0, ...)
 
            names(hc_labs) = NULL
            cluster_label = list("labels"= hc_labs)

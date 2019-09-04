@@ -26,9 +26,9 @@ determine what proportion of total number of cells have close pairs.}
 \item{...}{\code{umap} arguments may be passed.}
 }
 \value{
-A SingleCellExperiment object with a new entry under the
+A SingleCellExperiment object with two new entry under the
 \code{reducedDim()} container to store the reduced dimension components
-with the name \code{"CComponents"}.
+with the name \code{"CComponents"} and the rank expression matrix named \code{"RankMat"}.
 }
 \description{
 Correct the merged count data based on rank values to obtain a set of reduced and corrected dimensions.
