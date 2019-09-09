@@ -42,7 +42,7 @@
 #' sce <- Cluster(sce,  use.subsamples=FALSE, conf=0.1)
 Cluster<-function(object,
                   use.subsamples= TRUE,
-                  method = "default",
+                  method = "louvian",
                   use.reduced.dims = NULL,
                   k_nn=10,
                   conf=0.75,
@@ -181,7 +181,7 @@ Cluster<-function(object,
            cat("Done.\n")
          },
 
-         {
+         louvian={
            # default clutering
            if(is.null(trees))
              trees = .buildAnnTrees(ss_sel_genes)
