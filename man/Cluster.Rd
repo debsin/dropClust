@@ -4,7 +4,7 @@
 \alias{Cluster}
 \title{Clustering of samples}
 \usage{
-Cluster(object, use.subsamples = TRUE, method = "default",
+Cluster(object, use.subsamples = TRUE, method = "louvian",
   use.reduced.dims = NULL, k_nn = 10, conf = 0.75,
   use.previous = FALSE, ...)
 }

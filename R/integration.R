@@ -85,7 +85,7 @@ Correction<-function(object, method="default", close_th=0.1, cells_th=0.1, compo
                 close_threshold = close_th,
                 cells_threshold = cells_th,
                 nreduce = 1000)
-  remove_these <- .reduce_genes_r(input)
+  remove_these <- reduce_genes_cpp(input)
 
   reduced_matrix <- amatrix[, which(remove_these==0)]
   cat("from",ncol(amatrix), "to",ncol(reduced_matrix),"genes.\n" )
@@ -135,45 +135,45 @@ Correction<-function(object, method="default", close_th=0.1, cells_th=0.1, compo
   return(new_matrix)
 }
 
-.reduce_genes_r<-function(input){
-  mat = input$matrix
-  close_threshold = input$close_threshold
-  cells_threshold = input$cells_threshold
-
-  print(dim(mat))
-  print(close_threshold)
-  print(cells_threshold)
-  ncells = nrow(mat)
-  ngenes = ncol(mat)
-  keep_genes = rep(0, ngenes)
-
-  vote_matrix = mat.or.vec(nr = ngenes,nc = ngenes)
-  score_g = c()
-
-  for(i in 1:ngenes){
-    for(j in 1:ngenes){
-      # delta_ratios = abs(mat[,i]-mat[,j])/pmax(mat[,i],mat[j])
-      signs = sign(mat[,i]-mat[,j])
-      signs_1 = sum(signs > 0)
-      signs_2 = sum(signs < 0)
-      fraction = min(signs_1, signs_2)/max(signs_1, signs_2)
-      score = ifelse(fraction>=0.5,1,0)
-      # print(delta_ratios)
-      # if(sum(delta_ratios<close_threshold) > (cells_threshold * ncells)) {
-      #   vote_matrix[i,j] = vote_matrix[i,j] - 1
-      # }
-      # else
-      #   vote_matrix[i,j] = vote_matrix[i,j] + 1
-    }
-    score_g = c(score_g, sum(score)/ngenes)
-  }
-
-  keep_genes = ifelse(score_g> 0.5, 1,0)
-
-  # rs = rowSums(vote_matrix)
-  # ordered = order(rs,decreasing = T)
-  # qualified = setdiff(ordered, which(seq(ngenes)>0))
-
-  return(keep_genes)
-}
-
+# .reduce_genes_r<-function(input){
+#   mat = input$matrix
+#   close_threshold = input$close_threshold
+#   cells_threshold = input$cells_threshold
+#
+#   # print(dim(mat))
+#   # print(close_threshold)
+#   # print(cells_threshold)
+#   ncells = nrow(mat)
+#   ngenes = ncol(mat)
+#   keep_genes = rep(0, ngenes)
+#
+#   vote_matrix = mat.or.vec(nr = ngenes,nc = ngenes)
+#   score_g = c()
+#
+#   for(i in 1:ngenes){
+#     for(j in 1:ngenes){
+#       # delta_ratios = abs(mat[,i]-mat[,j])/pmax(mat[,i],mat[j])
+#       signs = sign(mat[,i]-mat[,j])
+#       signs_1 = sum(signs > 0)
+#       signs_2 = sum(signs < 0)
+#       fraction = min(signs_1, signs_2)/max(signs_1, signs_2)
+#       score = ifelse(fraction>=0.5,1,0)
+#       # print(delta_ratios)
+#       # if(sum(delta_ratios<close_threshold) > (cells_threshold * ncells)) {
+#       #   vote_matrix[i,j] = vote_matrix[i,j] - 1
+#       # }
+#       # else
+#       #   vote_matrix[i,j] = vote_matrix[i,j] + 1
+#     }
+#     score_g = c(score_g, sum(score)/ngenes)
+#   }
+#
+#   keep_genes = ifelse(score_g> cells_threshold, 1,0)
+#
+#   # rs = rowSums(vote_matrix)
+#   # ordered = order(rs,decreasing = T)
+#   # qualified = setdiff(ordered, which(seq(ngenes)>0))
+#
+#   return(keep_genes)
+# }
+#

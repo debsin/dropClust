@@ -194,6 +194,20 @@ Cluster<-function(object,
            partition = igraph::cluster_louvain(G)
            cluster_label = list("labels"=partition$membership)
            cat("Done.\n")
+         },
+         {
+           # default clutering
+           if(is.null(trees))
+             trees = .buildAnnTrees(ss_sel_genes)
+           cat("Louvain Partitioning...")
+           indices = lapply(seq(nrow(ss_sel_genes)),function(x) trees$getNNsByItem(x, 10))
+           G=igraph::simplify(igraph::graph_from_adj_list(indices,
+                                                          mode="all",
+                                                          duplicate = FALSE))
+
+           partition = igraph::cluster_louvain(G)
+           cluster_label = list("labels"=partition$membership)
+           cat("Done.\n")
          }
   )
   return(cluster_label)
