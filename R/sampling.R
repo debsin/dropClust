@@ -52,7 +52,7 @@ Sampling<-function(object,
 
   if(method=="sps"){
 
-    if(!any(reducedDimNames(object)=="integration"))
+    if(!any(reducedDimNames(object)=="CComponents"))
       data = Log2Normalize(normcounts(object)[SingleCellExperiment::rowData(object)$HVG, sample_ids],return.sparse = FALSE)
     else
       data = as.matrix(normcounts(object)[, sample_ids])
