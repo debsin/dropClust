@@ -18,7 +18,10 @@
 #' @param conf numeric [0-1], defines the expected confidence of majority for a consensus. Cells remain unassigned when majority is below \code{conf}.
 #' @param use.previous optional, when \code{TRUE}, the clustering step is skipped and only
 #' the post-hoc clusering is repeated with the new \code{conf}.
-#' @param ... For the \code{kmeans} method option, the argument \code{center} must be passed which specifies the number of clusters.
+#' @param ... For the \code{kmeans} method option, the argument \code{center} must be passed which specifies
+#' the number of clusters. Arguments specific to \code{cutreeDynamic} function may be passed when
+#' \code{method = "hclust"}; for reference, the default values of \code{minClusterSize} and \code{deepSplit}
+#' are set to 20 and 1 respectively.
 #' @return List of:\cr
 #' \enumerate{
 #' \item \code{cluster.ident} vector cluster identifiers ranging from 1 to the number of clusters for respective data points.\cr
