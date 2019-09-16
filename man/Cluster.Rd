@@ -27,7 +27,10 @@ When \code{hclust}, hierarchical clustering is used.}
 \item{use.previous}{optional, when \code{TRUE}, the clustering step is skipped and only
 the post-hoc clusering is repeated with the new \code{conf}.}
 
-\item{...}{For the \code{kmeans} method option, the argument \code{center} must be passed which specifies the number of clusters.}
+\item{...}{For the \code{kmeans} method option, the argument \code{center} must be passed which specifies
+the number of clusters. Arguments specific to \code{cutreeDynamic} function may be passed when
+\code{method = "hclust"}; for reference, the default values of \code{minClusterSize} and \code{deepSplit}
+are set to 20 and 1 respectively.}
 }
 \value{
 List of:\cr
