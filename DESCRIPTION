@@ -1,13 +1,14 @@
 Package: dropClust
 Type: Package
 Title: Single Cell Transcriptome Analysis
-Version: 2.0.0
+Version: 2.1.0
 Author: Debajyoti Sinha, Pradyumn Sinha, Ritwik Saha, Sanghamitra Bandyopadhyay, Debarka Sengupta
 Maintainer: Debajyoti Sinha <deb.sinha@hotmail.com>
 Description: A toolkit for resource efficient analysis of large scale single cell RNA-Seq data. See Sinha D, Sinha P, Saha R, Bandyopadhyay S and Sengupta D (2019) <doi:10.1101/596924> and Sinha D, et al (2018) <doi:10.1093/nar/gky007> for more details.
-Depends: R (>= 3.4),
+Depends: R (>= 3.6),
          ggplot2
-Imports: dynamicTreeCut,
+Imports: batchelor,
+         dynamicTreeCut,
          flexclust,
          GenSA,
          graphics,
@@ -15,6 +16,7 @@ Imports: dynamicTreeCut,
          gridExtra,
          igraph,
          irlba,
+         magrittr,
          methods,
          Matrix,
          pheatmap,
@@ -26,11 +28,16 @@ Imports: dynamicTreeCut,
          Rdpack,
          reshape2,
          Rtsne,
+         S4Vectors,
+         SingleCellExperiment,
          stats,
+         SummarizedExperiment,
          tibble,
-         utils
+         utils,
+         uwot
 Suggests: knitr, rmarkdown
 LinkingTo: Rcpp, RcppEigen
+biocViews:
 RdMacros: Rdpack
 License: GPL-3
 Encoding: UTF-8

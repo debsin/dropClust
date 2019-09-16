@@ -1,6 +1,15 @@
 
 The latest version of dropClust is now available in desktop and online versions.
 
+New Additions
+====
+
+
+Improved Interoperability  |  Integrative Analysis     |     Online web-server     |
+:-------------------------:|:-------------------------:|:-------------------------:|
+SingleCellExperiment Container          |  <img width="250" src="doc/batch.png">|     <img width="250px" src="doc/Capture.png">    |
+
+
 
 dropClust Online
 ====
@@ -18,6 +27,7 @@ dropClust Online
        -  [Differential gene analysis](#find-cluster-specific-differentially-expressed-genes)
        -  [Plot marker genes](#plot-hand-picked-marker-genes)
        -  [Draw heatmap](#draw-heatmap)
+       -  [Integrative Analysis](#integrative-analysis)
 
 
 
@@ -28,7 +38,7 @@ The developer version of the R package can be installed with the following R com
 
 ``` r
 library(devtools)
-install_github("debsin/dropClust", dependencies = T)
+install_github("debsin/dropClust", dependencies = T,  ref="devel")
 ```
 
 Vignette tutorial
@@ -41,18 +51,6 @@ Setting up directories
 ``` r
 
 library(dropClust)
-
-# -------------------------------------
-# specify paths and load functions
-# -------------------------------------
-WORK_DIR = "C:/Projects/dropClust/"
-DATA_DIR <- file.path(WORK_DIR,"data")       
-FIG_DIR <-  file.path(WORK_DIR,"plots")         
-REPORT_DIR  <- file.path(WORK_DIR,"report")    
-
-dir.create(file.path(FIG_DIR),showWarnings = FALSE)
-dir.create(file.path(REPORT_DIR),showWarnings = FALSE)
-
 set.seed(0)
 ```
 
@@ -66,58 +64,37 @@ dropClust loads UMI count expression data from three input files. The files foll
 -   gene identifiers as a TSV file
 
 ``` r
-# Load Data from path: C:/Projects/dropClust/data/pbmc3k/hg19
-pbmc.data<-read_data(file.path(DATA_DIR,'pbmc3k/hg19'), format = "10X")
+# Load Data, path contains decompressed files 
+sce <-readfiles(path = "C:/Projects/dropClust/data/pbmc3k/hg19/")
 ```
 
 Pre-processing
 --------------
-
 dropClust performs pre-processing to remove poor quality cells and genes. dropClust is also equipped to mitigate batch-effects that may be present. The user does not need to provide any information regarding the source of the batch for individual transcriptomes. However, the batch-effect removal step is optional.
 
-Cells are filtered based on the total UMI count in a cell specified by parameter `th`.
+Cells are filtered based on the total UMI count in a cell specified by parameter `min_count`.  Poor quality genes are removed based on the minimum number of cells `min_count` with expressions above a given threshold `min_count`. 
 
 ``` r
 # Filter poor quality cells.  A threshold th corresponds to the total count of a cell.
-filtered.data <- filter_cells(pbmc.data)
-
-dim(filtered.data$mat)
-```
-
-### Boosting rare cell discovery
-
-dropClust estimates minor population and their associated genes directly from the raw data by finding exclusive groups of co-expressed genes within a small population of transcriptomes. These genes and cells are then included for later processing to boost rare-cell discovery.
-
-``` r
-print("Fetch rare genes...")
-rare_data <- get_rare_genes(filtered.data)
+sce<-FilterCells(sce)
+sce<-FilterGenes(sce)
 ```
 
 ### Data normalization and removing poor quality genes
 
-Poor quality genes are removed based on the minimum number of cells with expressions above a given threshold. Count normalization is then performed with the good quality genes only.
+Count normalization is then performed with the good quality genes only. Normalized expression values is computed on the raw count data in a SingleCellExperiment object, using the median normalized total count.
 
-``` r
-# Filter poor genes
-# Genes with UMI count greater than min.count = 2 in atleast min.cell = 3 cells is retained.
-lnorm<-normalize(filtered.data, min.count=2, min.cell=3)
+```{r}
+sce<-CountNormalize(sce)
+
 ```
-
-Further gene selection is carried out by ranking the genes based on its dispersion index.
+### Selecting highly variable genes 
+Further gene selection is carried out by ranking the genes based on its dispersion index. 
 
 ```r
 # Select Top Dispersed Genes by setting ngenes_keep.
-dp_genes <- dispersion_genes(lnorm, ngenes_keep = 1000)
+sce<-RankGenes(sce, ngenes_keep = 1000)
 ```
-
-Finally log normalization is performed after adding pseudo count. In this stage batch correction my be carried out by setting the `matrix.transform()` function argument: `batch_correction=TRUE`.
-```r
-# Log Normalize Matrix with genes-subset,
-# perform batch effect removal operation when input contains batches
-whole <- matrix.transform(lnorm,dp_genes ,rare_data, batch_correction = FALSE)
-```
-
-
 
 
 Structure Preserving Sampling
@@ -127,25 +104,19 @@ Primary clustering is performed in a fast manner to estimate a gross structure o
 
 ``` r
 
-sample_ids = initial.samples(filtered.data, rare_data)
+sce<-Sampling(sce)
 
-
-# Structure preserving Sampling
-
-samples_louvain<-sampling(whole[sample_ids,])
-
-subsamples_louvain<-sample_ids[samples_louvain]
 ```
 
-### Gene selection based on PCA
-
-Another gene selection is performed to reduce the number of dimensions. PCA is used to identify genes affecting major components.
+Gene selection based on PCA
+---------------------------
+Another gene selection is performed to reduce the number of dimensions. PCA is used to identify genes affecting major components. 
 
 ``` r
 
-
 # Find PCA top 200 genes. This may take some time.
-top_pc_genes<-pc_genes(whole[subsamples_louvain,],top=200)
+sce<-RankPCAGenes(sce)
+
 ```
 
 
@@ -154,15 +125,14 @@ Clustering
 
 ### Fine tuning the clustering process
 
-By default best-fit, Louvain based clusters are returned. However, the user can tune the parameters to produce the desired number of clusters. The un-sampled transcriptomes are assigned cluster identifiers from among those identifiers produced from fine-tuning clustering. The post-hoc assignment can be controlled by setting the confidence value `conf`. High `conf` values will assign cluster identifiers to only those transcriptomes sharing a majority of common nearest neighbours.
+By default best-fit, Louvain based clusters are returned. However, the user can tune the parameters to produce the desired number of clusters. The un-sampled transcriptomes are assigned cluster identifiers from among those identifiers produced from fine-tuning clustering. The post-hoc assignment can be controlled by setting the confidence value `conf`. High `conf` values will assign cluster identifiers to only those transcriptomes sharing a majority of common nearest neighbours. 
+
 
 ``` r
-
+# When `method = hclust`
 # Adjust Minimum cluster size with argument minClusterSize (default = 20)
 # Adjust tree cut with argument level deepSplit (default = 3), higher value produces more clusters.
-
-clust.list<-cluster.cells(data = whole[,top_pc_genes], sp.samples = subsamples_louvain,
-                          default = FALSE, minClusterSize = 30,deepSplit = 2, conf = 0.8)
+sce<-Cluster(sce, method = "default", conf = 0.8)
 ```
 
 Visualizing clusters
@@ -171,58 +141,41 @@ Visualizing clusters
 Compute 2D embeddings for samples followed by post-hoc clustering.
 
 ``` r
-# ----------------------------
-# Tsne & CO-ORDINATE Projection
-# ----------------------------
-PROJ <- compute_2d_embedding(data = whole[,top_pc_genes],
-                             sp.samples = subsamples_louvain,
-                             clust.list = clust.list)
 
+sce<-PlotEmbedding(sce, embedding = "umap", spread = 10, min_dist = 0.1)
 
-# Scatter Plot
+plot_data = data.frame("Y1" = reducedDim(sce,"umap")[,1], Y2 = reducedDim(sce, "umap")[,2], color = sce$ClusterIDs)
 
-plot_proj_df_pred<-data.frame(Y1 = PROJ[,1],Y2 = PROJ[,2],color = as.factor(clust.list$cluster.ident))
-
-p<-all_plot(plot_proj_df_pred,filename = NA, title = "dropClust clusters")
-
-print(p)
+ScatterPlot(plot_data,title = "Clusters")
 ```
 
+![](doc/vignette_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 Find cluster specific Differentially Expressed genes
 ----------------------------------------------------
 
 ``` r
 
-# Construct sub-matrix for DE analysis
-de.mat<- reduce_mat_de(lnorm,clust.list)
-```
+DE_genes_all = FindMarkers(sce, selected_clusters=NA, lfc_th = 1, q_th =0.001, nDE=30)
 
-For performing DE analysis on selected clusters only, set variable `GRP` with a subset of predicted cluster identifiers as a character vector.
-```r
-# Pick Cell Type Specific Genes
-#############################
-
-# Cells of interest
-GRP = levels(clust.list$cluster.ident)
-# int_cells  = which(label %in% GRP)
-
-DE_genes_nodes_all  <- DE_genes(de_data = de.mat, selected_clusters = GRP, lfc_th = 1,q_th = 0.001)
-
-write.csv(DE_genes_nodes_all$genes,
-          file = file.path(REPORT_DIR, "ct_genes.csv"),
+write.csv(DE_genes_all$genes, 
+          file = file.path(tempdir(),"ct_genes.csv"),
           quote = FALSE)
+
 ```
+
 
 Plot hand picked marker genes
 -----------------------------
 
 ``` r
 
-marker_genes = c("S100A8","GNLY","PF4" )
+marker_genes = c("S100A8", "GNLY", "PF4")
 
-p<-plot_markers(de_data = de.mat, marker_genes)
+p<-PlotMarkers(sce, marker_genes)
 ```
+![](doc/vignette_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
 
 
 Heat map of top DE genes from each cluster
@@ -230,8 +183,85 @@ Heat map of top DE genes from each cluster
 
 ``` r
 # Draw heatmap
-#############################
-p<-plot_heatmap(de_data = de.mat, DE_res = DE_genes_nodes_all$DE_res,nDE = 10)
+p<-PlotHeatmap(sce, DE_res = DE_genes_all$DE_res,nDE = 10)
 
 print(p)
+```
+![](doc/vignette_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+
+Integrative analysis
+================
+
+## Loading datasets
+
+Each dataset represents one batch and must be a `SingleCellExperiment` object. The objects are are merged by passing a list in the next step.
+
+``` r
+
+library(dropClust)
+load(url("https://raw.githubusercontent.com/LuyiTian/CellBench_data/master/data/sincell_with_class.RData"))
+
+objects = list()
+
+objects[[1]] = sce_sc_10x_qc
+
+objects[[2]] = sce_sc_CELseq2_qc
+
+objects[[3]] = sce_sc_Dropseq_qc
+```
+
+## Merge datasets using dropClust
+
+Datasets can be merged in two ways: using a set of DE genes from each
+batch or, using the union of the sets of highly variable genes from each
+batch.
+
+
+## Perform correction and dimension reduction
+
+``` r
+set.seed(1)
+dc.corr <-  Correction(merged_data,  method="default", close_th = 0.1, cells_th = 0.1,
+                       components = 10, n_neighbors = 30,  min_dist = 1)
+```
+
+## Perform Clustering on integrated dimensions
+
+``` r
+dc.corr = Cluster(dc.corr,method = "kmeans",centers = 3)
+
+```
+
+## Visualizing clusters
+
+Compute 2D embeddings for samples followed by post-hoc clustering.
+
+``` r
+ScatterPlot(dc.corr, title = "Clusters")
+```
+
+![Batch corrected dropClust based
+Clustering.](doc/batchCorrection_files/figure-gfm/unnamed-chunk-5-1.png)
+
+## Optional Batch correction
+
+Users can use `fastmnn` method for batchcorrection. Specific arguments of fastmnn can also be passed through the `Correction` module.
+
+``` r
+merged_data.fastmnn<-Merge(all.objects,use.de.genes = FALSE)
+set.seed(1)
+mnn.corr <-  Correction(merged_data.fastmnn,  method="fastmnn", d = 10)
+mnn.corr = Cluster(mnn.corr,method = "kmeans",centers = 3)
+ScatterPlot(mnn.corr, title = "Clusters")
+```
+
+![](doc/batchCorrection_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+## Marker discovery from the merged dataset
+
+``` r
+de<-FindMarkers(dc.corr,q_th = 0.001, lfc_th = 1.2,nDE = 10)
+de$genes.df
+
 ```

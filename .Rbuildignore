@@ -2,6 +2,8 @@
 ^CRAN-RELEASE$
 ^Meta$
 ^doc$
+^scripts$
+^comparisons$
 ^LICENSE\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$

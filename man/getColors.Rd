@@ -2,16 +2,16 @@
 % Please edit documentation in R/plots.R
 \name{getColors}
 \alias{getColors}
-\title{Select custom colors}
+\title{Select custom colours}
 \usage{
 getColors(n)
 }
 \arguments{
-\item{n}{number of colors to generate.}
+\item{n}{number of colours to generate.}
 }
 \value{
-vector of colour hexcodes of length n.
+vector of colour hex codes of length n.
 }
 \description{
-Produces custom colors.
+Produces custom colours.
 }
